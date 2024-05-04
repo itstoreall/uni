@@ -1,29 +1,24 @@
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import { createServer } from 'node:http';
-import { Server } from 'socket.io';
-import { runServer } from './utils/global';
-// import * as gc from './configs/global';
+import ex from 'express';
+import { createServer } from 'http';
+import * as gt from './types/global';
+import * as gu from './utils/global';
+import * as gc from './config/global';
 import routes from './routes';
 
-// const { kaomoji } = gc.system;
+const { kaomoji } = gc.system;
 
-const app = express();
+const app: ex.Express = ex();
 const port = process.env.PORT || 4001;
-const corsOrigin = process.env.CORS_ORIGIN || '*';
-const corsOptions = { origin: corsOrigin?.split(',') };
-const server = createServer(app);
-const io = new Server(server, { cors: corsOptions });
 
-app.use(cors());
-app.use(express.json());
-app.use('/healthcheck', (_, res) => res.status(200).send('I`m fine!'));
+app.use((req, res, next) => gu.initApp({ req, res, next }));
+app.use('/healthcheck', (_, res) => res.status(200).send(kaomoji));
 app.use('/api', (_, __, next) => next(0), routes);
 
-server.listen(port, () => runServer(String(port), io));
+const server: gt.HttpServer = createServer(app);
 
-app.use((_, res) => res.status(404).json({ error: `Not found` }));
-app.use((e: Error, _: Request, res: Response, __: NextFunction) => {
+server.listen({ port }, () => gu.starter(String(port), server, app));
+
+app.use((e: Error, _: ex.Request, res: ex.Response, __: ex.NextFunction) => {
   const msg = e.message || 'Internal Server Error';
   return res.status(500).json({ error: msg });
 });
