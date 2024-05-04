@@ -1,12 +1,10 @@
 import ex from 'express';
 import { createServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
 import * as gt from './types/global';
 import * as gu from './utils/global';
 import * as gc from './config/global';
 import routes from './routes';
 import runApolloServer from './graphQL';
-// import { connectSocket, createSocketServer } from './socket';
 
 const { kaomoji } = gc.system;
 
@@ -20,15 +18,6 @@ app.use('/api', (_, __, next) => next(0), routes);
 const server: gt.HttpServer = createServer(app);
 
 runApolloServer(app);
-
-const io = new SocketIOServer(server);
-
-io.on('connection', socket => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
 
 server.listen({ port }, () => gu.starter(String(port), server, app));
 

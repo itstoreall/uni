@@ -28,12 +28,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
-const socket_io_1 = require("socket.io");
 const gu = __importStar(require("./utils/global"));
 const gc = __importStar(require("./config/global"));
 const routes_1 = __importDefault(require("./routes"));
 const graphQL_1 = __importDefault(require("./graphQL"));
-// import { connectSocket, createSocketServer } from './socket';
 const { kaomoji } = gc.system;
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4001;
@@ -42,13 +40,6 @@ app.use('/healthcheck', (_, res) => res.status(200).send(kaomoji));
 app.use('/api', (_, __, next) => next(0), routes_1.default);
 const server = (0, http_1.createServer)(app);
 (0, graphQL_1.default)(app);
-const io = new socket_io_1.Server(server);
-io.on('connection', socket => {
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-});
 server.listen({ port }, () => gu.starter(String(port), server, app));
 app.use((e, _, res, __) => {
     const msg = e.message || 'Internal Server Error';
