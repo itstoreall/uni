@@ -37,8 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.starter = exports.initApp = exports.corsCheck = exports.isLocal = void 0;
 const os_1 = __importDefault(require("os"));
-const graphQL_1 = __importDefault(require("../graphQL"));
-const socket = __importStar(require("../socket"));
+// import runApolloServer from '../graphQL';
+// import * as socket from '../socket';
 const gc = __importStar(require("../config/global"));
 require('dotenv').config();
 const corsOrigin = process.env.CORS_ORIGIN;
@@ -56,11 +56,10 @@ const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
 exports.initApp = initApp;
 // ------ Server:
 const starter = (port, server, app) => __awaiter(void 0, void 0, void 0, function* () {
-    const isApollo = yield (0, graphQL_1.default)(app);
-    const io = socket.createSocketServer(server);
-    socket.connectSocket(io);
-    if (!isApollo || !io)
-        return;
+    // const isApollo = await runApolloServer(app);
+    // const io = socket.createSocketServer(server);
+    // socket.connectSocket(io);
+    // if (!isApollo || !io) return;
     const dbName = 'no db';
     console.log('');
     console.log(`  server ${(0, exports.isLocal)() ? dev : prod}:${port} -> ${dbName} `);

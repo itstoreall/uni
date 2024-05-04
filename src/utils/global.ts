@@ -1,6 +1,6 @@
 import os from 'os';
-import runApolloServer from '../graphQL';
-import * as socket from '../socket';
+// import runApolloServer from '../graphQL';
+// import * as socket from '../socket';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
 require('dotenv').config();
@@ -24,12 +24,12 @@ export const initApp = (args: gt.ReqArgs) =>
 // ------ Server:
 
 export const starter: gt.RunServer = async (port, server, app) => {
-  const isApollo = await runApolloServer(app);
+  // const isApollo = await runApolloServer(app);
 
-  const io = socket.createSocketServer(server);
-  socket.connectSocket(io);
+  // const io = socket.createSocketServer(server);
+  // socket.connectSocket(io);
 
-  if (!isApollo || !io) return;
+  // if (!isApollo || !io) return;
 
   const dbName = 'no db';
   console.log('');
