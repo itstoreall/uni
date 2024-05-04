@@ -4,7 +4,7 @@ const test = async (req: Req, res: Res, next: Next) => {
   console.log(' * GET generateImage');
   try {
     console.log(' * RES test:');
-    res.status(200).json('test');
+    res.status(200).json('test 2');
   } catch (e) {
     console.log(' * ERROR in test:', e);
     next(e);

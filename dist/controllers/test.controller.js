@@ -13,7 +13,7 @@ const test = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
     console.log(' * GET generateImage');
     try {
         console.log(' * RES test:');
-        res.status(200).json('test');
+        res.status(200).json('test 2');
     }
     catch (e) {
         console.log(' * ERROR in test:', e);
