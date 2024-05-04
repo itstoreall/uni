@@ -1,12 +1,12 @@
 import ex from 'express';
 import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import * as gt from './types/global';
 import * as gu from './utils/global';
 import * as gc from './config/global';
 import routes from './routes';
 import runApolloServer from './graphQL';
 // import { connectSocket, createSocketServer } from './socket';
-import { Server as SocketIOServer } from 'socket.io';
 
 const { kaomoji } = gc.system;
 
@@ -29,16 +29,6 @@ io.on('connection', socket => {
     console.log('user disconnected');
   });
 });
-
-// new SocketIOServer(server, {
-//   allowRequest: (req, callback) => {
-//     const isOriginValid = gu.corsCheck(req.headers.origin!);
-//     callback(null, isOriginValid);
-//   }
-// });
-
-// const io = createSocketServer(server);
-// connectSocket(io);
 
 server.listen({ port }, () => gu.starter(String(port), server, app));
 
