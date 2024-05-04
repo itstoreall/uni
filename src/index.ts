@@ -5,7 +5,8 @@ import * as gu from './utils/global';
 import * as gc from './config/global';
 import routes from './routes';
 import runApolloServer from './graphQL';
-import { connectSocket, createSocketServer } from './socket';
+// import { connectSocket, createSocketServer } from './socket';
+import { Server as SocketIOServer } from 'socket.io';
 
 const { kaomoji } = gc.system;
 
@@ -20,8 +21,24 @@ const server: gt.HttpServer = createServer(app);
 
 runApolloServer(app);
 
-const io = createSocketServer(server);
-connectSocket(io);
+const io = new SocketIOServer(server);
+
+io.on('connection', socket => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+// new SocketIOServer(server, {
+//   allowRequest: (req, callback) => {
+//     const isOriginValid = gu.corsCheck(req.headers.origin!);
+//     callback(null, isOriginValid);
+//   }
+// });
+
+// const io = createSocketServer(server);
+// connectSocket(io);
 
 server.listen({ port }, () => gu.starter(String(port), server, app));
 
