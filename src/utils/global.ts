@@ -1,10 +1,16 @@
 import os from 'os';
+import * as projectConfig from '../projects/spotAction/config';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
+import * as ge from '../enum/global';
+import service from '../db/service';
+import mongoose from 'mongoose';
+import getModel from '../db';
 require('dotenv').config();
 
 const corsOrigin = process.env.CORS_ORIGIN;
 const { kaomoji, host } = gc.system;
+const { SPOT_ACTION } = ge.Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os.hostname()}`;
 
@@ -21,8 +27,29 @@ export const initApp = (args: gt.ReqArgs) =>
 
 // ------ Server:
 
+const SpotActionModel = getModel(SPOT_ACTION);
+
+console.log('projectConfig', projectConfig.spotAction.status.INVESTED);
+
 export const starter: gt.RunServer = async (port, server, app) => {
-  const dbName = 'no db';
+  // /*
+  const actions = await service.getAll(SpotActionModel);
+  console.log('actions --->', actions);
+  // */
+
+  /*
+  const action = await service.create(SpotActionModel, {
+    tokenId: 4,
+    token: 'avax',
+    action: projectConfig.spotAction.action.BUY,
+    average_price: 15.5,
+    prices: [10, 21],
+    status: projectConfig.spotAction.status.INVESTED
+  });
+  console.log('action ->', action);
+  // */
+
+  const dbName = mongoose.connection.name || 'no db';
   console.log('');
   console.log(`  server ${isLocal() ? dev : prod}:${port} -> ${dbName} `);
   console.log('');

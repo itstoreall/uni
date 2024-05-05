@@ -26,34 +26,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const apollo_server_express_1 = require("apollo-server-express");
-const express_1 = __importDefault(require("express"));
-const http_1 = require("http");
-const gu = __importStar(require("./utils/global"));
-const gc = __importStar(require("./config/global"));
-const routes_1 = __importDefault(require("./routes"));
-const typeDefs = (0, apollo_server_express_1.gql) `
-  type Query {
-    hello: String
-  }
-`;
-const resolvers = {
-    Query: {
-        hello: () => 'Hello world!'
+const mongoose_1 = __importDefault(require("mongoose"));
+const ge = __importStar(require("../enum/global"));
+const models_1 = __importDefault(require("./models"));
+require('dotenv').config();
+// const { spotAction } = gc.project;
+const { SPOT_ACTION } = ge.Project;
+// const url = process.env.MONGO_DB;
+mongoose_1.default.connect(process.env.MONGO_DB);
+// const spotSchema = new Schema({
+//   action: String
+// });
+// const SpotModel = mongoose.model('Spot', schema.spot);
+// const SpotSchema = new Schema({
+//   // tokenId: Number,
+//   action: String
+//   // average_price: BigInt,
+//   // prices: { type: [Schema.Types.String], default: [] },
+//   // status: String
+// });
+// const SpotModel = mongoose.model('spot', SpotSchema);
+const getModel = (label) => {
+    // const res = new SpotModel({ action: 'buy' });
+    // await res.save();
+    switch (label) {
+        case SPOT_ACTION:
+            return models_1.default.SpotAction;
+        default:
+            return null;
     }
+    // const res2 = await currentModel.find({});
+    // console.log('res2 ===>', res2);
 };
-const { kaomoji } = gc.system;
-const app = (0, express_1.default)();
-const port = process.env.PORT || 4001;
-app.use((req, res, next) => gu.initApp({ req, res, next }));
-app.use('/healthcheck', (_, res) => res.status(200).send(kaomoji));
-app.use('/api', (_, __, next) => next(0), routes_1.default);
-const server = (0, http_1.createServer)(app);
-const apollo = new apollo_server_express_1.ApolloServer({ typeDefs, resolvers });
-apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
-server.listen({ port }, () => gu.starter(String(port), server, app));
-app.use((e, _, res, __) => {
-    const msg = e.message || 'Internal Server Error';
-    return res.status(500).json({ error: msg });
-});
+exports.default = getModel;
+// let dbConnection;
+// // const client = new MongoClient(url);
+// const uniDB = {
+//   connectToDB: (cb: any) => {},
+//   getDB: dbConnection
+// };
+// export default uniDB;
 //# sourceMappingURL=index.js.map

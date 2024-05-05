@@ -37,10 +37,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.starter = exports.initApp = exports.corsCheck = exports.isLocal = void 0;
 const os_1 = __importDefault(require("os"));
+const projectConfig = __importStar(require("../projects/spotAction/config"));
 const gc = __importStar(require("../config/global"));
+const ge = __importStar(require("../enum/global"));
+const service_1 = __importDefault(require("../db/service"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const db_1 = __importDefault(require("../db"));
 require('dotenv').config();
 const corsOrigin = process.env.CORS_ORIGIN;
 const { kaomoji, host } = gc.system;
+const { SPOT_ACTION } = ge.Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os_1.default.hostname()}`;
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
@@ -53,8 +59,25 @@ const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
     : args.next();
 exports.initApp = initApp;
 // ------ Server:
+const SpotActionModel = (0, db_1.default)(SPOT_ACTION);
+console.log('projectConfig', projectConfig.spotAction.status.INVESTED);
 const starter = (port, server, app) => __awaiter(void 0, void 0, void 0, function* () {
-    const dbName = 'no db';
+    // /*
+    const actions = yield service_1.default.getAll(SpotActionModel);
+    console.log('actions --->', actions);
+    // */
+    /*
+    const action = await service.create(SpotActionModel, {
+      tokenId: 4,
+      token: 'avax',
+      action: projectConfig.spotAction.action.BUY,
+      average_price: 15.5,
+      prices: [10, 21],
+      status: projectConfig.spotAction.status.INVESTED
+    });
+    console.log('action ->', action);
+    // */
+    const dbName = mongoose_1.default.connection.name || 'no db';
     console.log('');
     console.log(`  server ${(0, exports.isLocal)() ? dev : prod}:${port} -> ${dbName} `);
     console.log('');
