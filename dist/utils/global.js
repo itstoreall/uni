@@ -54,7 +54,7 @@ const dbCheck = (mongoose) => {
     return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
 };
 exports.dbCheck = dbCheck;
-const corsCheck = (origin) => String(origin) === corsOrigin;
+const corsCheck = (origin) => String(origin).includes(corsOrigin);
 exports.corsCheck = corsCheck;
 // ------ App (Express):
 const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)

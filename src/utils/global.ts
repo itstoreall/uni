@@ -21,7 +21,8 @@ export const dbCheck = (mongoose: any) => {
   return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
 };
 
-export const corsCheck = (origin: string) => String(origin) === corsOrigin;
+export const corsCheck = (origin: string) =>
+  String(origin).includes(corsOrigin);
 
 // ------ App (Express):
 
