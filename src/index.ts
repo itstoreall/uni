@@ -1,22 +1,11 @@
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import ex from 'express';
 import { createServer } from 'http';
 import * as gt from './types/global';
 import * as gu from './utils/global';
 import * as gc from './config/global';
 import routes from './routes';
-
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!'
-  }
-};
+import gql from './graphQL';
 
 const { kaomoji } = gc.system;
 
@@ -28,6 +17,7 @@ app.use('/healthcheck', (_, res) => res.status(200).send(kaomoji));
 app.use('/api', (_, __, next) => next(0), routes);
 
 const server: gt.HttpServer = createServer(app);
+const { typeDefs, resolvers } = gql;
 const apollo = new ApolloServer({ typeDefs, resolvers });
 
 apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));

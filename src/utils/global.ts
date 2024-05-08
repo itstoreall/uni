@@ -1,10 +1,10 @@
 import os from 'os';
+import mongoose from 'mongoose';
 import * as projectConfig from '../projects/spotAction/config';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
 import * as ge from '../enum/global';
 import service from '../db/service';
-import mongoose from 'mongoose';
 import getModel from '../db';
 require('dotenv').config();
 
@@ -15,6 +15,11 @@ const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os.hostname()}`;
 
 export const isLocal = () => os.hostname().split('.').pop() === 'local';
+
+export const dbCheck = (mongoose: any) => {
+  const isConnected = mongoose.connection.readyState === 2;
+  return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
+};
 
 export const corsCheck = (origin: string) => String(origin) === corsOrigin;
 
@@ -29,12 +34,10 @@ export const initApp = (args: gt.ReqArgs) =>
 
 const SpotActionModel = getModel(SPOT_ACTION);
 
-console.log('projectConfig', projectConfig.spotAction.status.INVESTED);
-
 export const starter: gt.RunServer = async (port, server, app) => {
-  // /*
+  /*
   const actions = await service.getAll(SpotActionModel);
-  console.log('actions --->', actions);
+  console.log('actions --->', actions?.length);
   // */
 
   /*
@@ -49,7 +52,7 @@ export const starter: gt.RunServer = async (port, server, app) => {
   console.log('action ->', action);
   // */
 
-  const dbName = mongoose.connection.name || 'no db';
+  const dbName = dbCheck(mongoose).db;
   console.log('');
   console.log(`  server ${isLocal() ? dev : prod}:${port} -> ${dbName} `);
   console.log('');

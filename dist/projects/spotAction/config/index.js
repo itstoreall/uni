@@ -25,16 +25,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.spotAction = void 0;
 const ge = __importStar(require("../../../enum/global"));
-var Action;
-(function (Action) {
-    Action["BUY"] = "buy";
-    Action["SELL"] = "sell";
-})(Action || (Action = {}));
-var Status;
-(function (Status) {
-    Status["INVESTED"] = "invested";
-    Status["WITHDRAWN"] = "withdrawn";
-})(Status || (Status = {}));
 exports.spotAction = {
     label: ge.Project.SPOT_ACTION,
     action: Action,

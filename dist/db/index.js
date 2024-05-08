@@ -30,40 +30,15 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const ge = __importStar(require("../enum/global"));
 const models_1 = __importDefault(require("./models"));
 require('dotenv').config();
-// const { spotAction } = gc.project;
 const { SPOT_ACTION } = ge.Project;
-// const url = process.env.MONGO_DB;
 mongoose_1.default.connect(process.env.MONGO_DB);
-// const spotSchema = new Schema({
-//   action: String
-// });
-// const SpotModel = mongoose.model('Spot', schema.spot);
-// const SpotSchema = new Schema({
-//   // tokenId: Number,
-//   action: String
-//   // average_price: BigInt,
-//   // prices: { type: [Schema.Types.String], default: [] },
-//   // status: String
-// });
-// const SpotModel = mongoose.model('spot', SpotSchema);
 const getModel = (label) => {
-    // const res = new SpotModel({ action: 'buy' });
-    // await res.save();
     switch (label) {
         case SPOT_ACTION:
             return models_1.default.SpotAction;
         default:
             return null;
     }
-    // const res2 = await currentModel.find({});
-    // console.log('res2 ===>', res2);
 };
 exports.default = getModel;
-// let dbConnection;
-// // const client = new MongoClient(url);
-// const uniDB = {
-//   connectToDB: (cb: any) => {},
-//   getDB: dbConnection
-// };
-// export default uniDB;
 //# sourceMappingURL=index.js.map

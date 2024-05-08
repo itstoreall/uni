@@ -32,16 +32,7 @@ const http_1 = require("http");
 const gu = __importStar(require("./utils/global"));
 const gc = __importStar(require("./config/global"));
 const routes_1 = __importDefault(require("./routes"));
-const typeDefs = (0, apollo_server_express_1.gql) `
-  type Query {
-    hello: String
-  }
-`;
-const resolvers = {
-    Query: {
-        hello: () => 'Hello world!'
-    }
-};
+const graphQL_1 = __importDefault(require("./graphQL"));
 const { kaomoji } = gc.system;
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4001;
@@ -49,6 +40,7 @@ app.use((req, res, next) => gu.initApp({ req, res, next }));
 app.use('/healthcheck', (_, res) => res.status(200).send(kaomoji));
 app.use('/api', (_, __, next) => next(0), routes_1.default);
 const server = (0, http_1.createServer)(app);
+const { typeDefs, resolvers } = graphQL_1.default;
 const apollo = new apollo_server_express_1.ApolloServer({ typeDefs, resolvers });
 apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
 server.listen({ port }, () => gu.starter(String(port), server, app));

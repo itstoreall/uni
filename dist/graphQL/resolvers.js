@@ -35,54 +35,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.starter = exports.initApp = exports.corsCheck = exports.dbCheck = exports.isLocal = void 0;
-const os_1 = __importDefault(require("os"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const gc = __importStar(require("../config/global"));
+exports.resolvers = void 0;
 const ge = __importStar(require("../enum/global"));
+const service_1 = __importDefault(require("../db/service"));
 const db_1 = __importDefault(require("../db"));
-require('dotenv').config();
-const corsOrigin = process.env.CORS_ORIGIN;
-const { kaomoji, host } = gc.system;
 const { SPOT_ACTION } = ge.Project;
-const dev = `${kaomoji} http://${host.local}`;
-const prod = `http://${os_1.default.hostname()}`;
-const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
-exports.isLocal = isLocal;
-const dbCheck = (mongoose) => {
-    const isConnected = mongoose.connection.readyState === 2;
-    return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
-};
-exports.dbCheck = dbCheck;
-const corsCheck = (origin) => String(origin) === corsOrigin;
-exports.corsCheck = corsCheck;
-// ------ App (Express):
-const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
-    ? args.res.status(403).send('CORS!')
-    : args.next();
-exports.initApp = initApp;
-// ------ Server:
 const SpotActionModel = (0, db_1.default)(SPOT_ACTION);
-const starter = (port, server, app) => __awaiter(void 0, void 0, void 0, function* () {
-    /*
-    const actions = await service.getAll(SpotActionModel);
-    console.log('actions --->', actions?.length);
-    // */
-    /*
-    const action = await service.create(SpotActionModel, {
-      tokenId: 4,
-      token: 'avax',
-      action: projectConfig.spotAction.action.BUY,
-      average_price: 15.5,
-      prices: [10, 21],
-      status: projectConfig.spotAction.status.INVESTED
-    });
-    console.log('action ->', action);
-    // */
-    const dbName = (0, exports.dbCheck)(mongoose_1.default).db;
-    console.log('');
-    console.log(`  server ${(0, exports.isLocal)() ? dev : prod}:${port} -> ${dbName} `);
-    console.log('');
-});
-exports.starter = starter;
-//# sourceMappingURL=global.js.map
+exports.resolvers = {
+    Query: {
+        getActions: () => __awaiter(void 0, void 0, void 0, function* () {
+            const actions = yield service_1.default.getAll(SpotActionModel);
+            console.log('actions -->', actions);
+            return actions;
+        }),
+        // getActions: async () => await service.getAll(SpotActionModel),
+        getUser: (_, args) => {
+            console.log(1111, args.id);
+            return `User ${args.id}`;
+        }
+    }
+};
+//# sourceMappingURL=resolvers.js.map

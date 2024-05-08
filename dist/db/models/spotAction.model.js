@@ -23,13 +23,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.EStatus = exports.EAction = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const ge = __importStar(require("../../enum/global"));
 const { SPOT_ACTION } = ge.Project;
+var EAction;
+(function (EAction) {
+    EAction["BUY"] = "buy";
+    EAction["SEL"] = "sell";
+})(EAction || (exports.EAction = EAction = {}));
+var EStatus;
+(function (EStatus) {
+    EStatus["BUY"] = "invested";
+    EStatus["SEL"] = "sell";
+})(EStatus || (exports.EStatus = EStatus = {}));
 const spotSchema = new mongoose_1.Schema({
     tokenId: Number,
     token: String,
-    action: String,
+    action: {
+        type: String,
+        enum: Object.values(EAction) // Use the enum to validate the `action` field values
+    },
     average_price: mongoose_1.Schema.Types.Number,
     prices: { type: [mongoose_1.Schema.Types.Number], default: [] },
     status: String
