@@ -57,7 +57,7 @@ const corsCheck = (origin) => corsOrigin === null || corsOrigin === void 0 ? voi
 exports.corsCheck = corsCheck;
 // ------ App (Express):
 const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
-    ? args.res.status(403).send('CORS! :)')
+    ? args.res.status(403).send(`uni ${kaomoji} server`)
     : args.next();
 exports.initApp = initApp;
 // ------ Server:
