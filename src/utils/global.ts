@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 // import * as projectConfig from '../projects/spotAction/config';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
+import { getPrices } from '../api';
 // import * as ge from '../enum/global';
 // import service from '../db/service';
 // import getModel from '../db';
@@ -36,6 +37,11 @@ export const initApp = (args: gt.ReqArgs) =>
 // const SpotActionModel = getModel(SPOT_ACTION);
 
 export const starter: gt.RunServer = async port => {
+  /*
+  const res = await getPrices();
+  console.log('getPrices:', res);
+  // */
+
   /*
   const actions = await service.getAll(SpotActionModel);
   console.log('actions --->', actions?.length);

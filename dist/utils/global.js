@@ -67,6 +67,10 @@ exports.initApp = initApp;
 // const SpotActionModel = getModel(SPOT_ACTION);
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
     /*
+    const res = await getPrices();
+    console.log('getPrices:', res);
+    // */
+    /*
     const actions = await service.getAll(SpotActionModel);
     console.log('actions --->', actions?.length);
     // */
