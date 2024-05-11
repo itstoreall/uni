@@ -6,7 +6,7 @@ export const typeDefs = gql`
   }
 
   """
-  enums:
+  Enums
   """
   enum EAction {
     buy
@@ -28,6 +28,9 @@ export const typeDefs = gql`
     status: EStatus
   }
 
+  """
+  Inputs
+  """
   input ActionInput {
     tokenId: Int!
     token: String!

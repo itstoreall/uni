@@ -8,16 +8,10 @@ const SpotActionModel = getModel(SPOT_ACTION);
 
 export const resolvers = {
   Query: {
-    getActions: async () => {
-      const actions: SpotAction[] = await service.getAll(SpotActionModel);
-      console.log('actions -->', actions);
-      return actions;
-    },
-
-    // getActions: async () => await service.getAll(SpotActionModel),
+    getActions: async () =>
+      (await service.getAll(SpotActionModel)) as SpotAction[],
 
     getUser: (_: any, args: any) => {
-      console.log(1111, args.id);
       return `User ${args.id}`;
     }
   }

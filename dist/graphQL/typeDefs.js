@@ -8,7 +8,7 @@ exports.typeDefs = (0, apollo_server_express_1.gql) `
   }
 
   """
-  enums:
+  Enums
   """
   enum EAction {
     buy
@@ -30,6 +30,9 @@ exports.typeDefs = (0, apollo_server_express_1.gql) `
     status: EStatus
   }
 
+  """
+  Inputs
+  """
   input ActionInput {
     tokenId: Int!
     token: String!

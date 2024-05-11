@@ -43,14 +43,8 @@ const { SPOT_ACTION } = ge.Project;
 const SpotActionModel = (0, db_1.default)(SPOT_ACTION);
 exports.resolvers = {
     Query: {
-        getActions: () => __awaiter(void 0, void 0, void 0, function* () {
-            const actions = yield service_1.default.getAll(SpotActionModel);
-            console.log('actions -->', actions);
-            return actions;
-        }),
-        // getActions: async () => await service.getAll(SpotActionModel),
+        getActions: () => __awaiter(void 0, void 0, void 0, function* () { return (yield service_1.default.getAll(SpotActionModel)); }),
         getUser: (_, args) => {
-            console.log(1111, args.id);
             return `User ${args.id}`;
         }
     }

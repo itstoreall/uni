@@ -38,13 +38,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.starter = exports.initApp = exports.corsCheck = exports.dbCheck = exports.isLocal = void 0;
 const os_1 = __importDefault(require("os"));
 const mongoose_1 = __importDefault(require("mongoose"));
+// import * as projectConfig from '../projects/spotAction/config';
 const gc = __importStar(require("../config/global"));
-const ge = __importStar(require("../enum/global"));
-const db_1 = __importDefault(require("../db"));
 require('dotenv').config();
 const corsOrigin = process.env.CORS_ORIGIN;
 const { kaomoji, host } = gc.system;
-const { SPOT_ACTION } = ge.Project;
+// const { SPOT_ACTION } = ge.Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os_1.default.hostname()}`;
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
@@ -54,16 +53,16 @@ const dbCheck = (mongoose) => {
     return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
 };
 exports.dbCheck = dbCheck;
-const corsCheck = (origin) => String(origin).includes(corsOrigin);
+const corsCheck = (origin) => corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(origin);
 exports.corsCheck = corsCheck;
 // ------ App (Express):
 const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
-    ? args.res.status(403).send('CORS!')
+    ? args.res.status(403).send('CORS! :)')
     : args.next();
 exports.initApp = initApp;
 // ------ Server:
-const SpotActionModel = (0, db_1.default)(SPOT_ACTION);
-const starter = (port, server, app) => __awaiter(void 0, void 0, void 0, function* () {
+// const SpotActionModel = getModel(SPOT_ACTION);
+const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
     /*
     const actions = await service.getAll(SpotActionModel);
     console.log('actions --->', actions?.length);
@@ -81,7 +80,7 @@ const starter = (port, server, app) => __awaiter(void 0, void 0, void 0, functio
     // */
     const dbName = (0, exports.dbCheck)(mongoose_1.default).db;
     console.log('');
-    console.log(`  server ${(0, exports.isLocal)() ? dev : prod}:${port} -> ${dbName} `);
+    console.log(`  uni ${(0, exports.isLocal)() ? dev : prod}:${port} -> ${dbName} `);
     console.log('');
 });
 exports.starter = starter;

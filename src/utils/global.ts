@@ -1,16 +1,16 @@
 import os from 'os';
 import mongoose from 'mongoose';
-import * as projectConfig from '../projects/spotAction/config';
+// import * as projectConfig from '../projects/spotAction/config';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
-import * as ge from '../enum/global';
-import service from '../db/service';
+// import * as ge from '../enum/global';
+// import service from '../db/service';
 import getModel from '../db';
 require('dotenv').config();
 
 const corsOrigin = process.env.CORS_ORIGIN;
 const { kaomoji, host } = gc.system;
-const { SPOT_ACTION } = ge.Project;
+// const { SPOT_ACTION } = ge.Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os.hostname()}`;
 
@@ -22,20 +22,20 @@ export const dbCheck = (mongoose: any) => {
 };
 
 export const corsCheck = (origin: string) =>
-  String(origin).includes(corsOrigin);
+  corsOrigin?.split(',').includes(origin);
 
 // ------ App (Express):
 
 export const initApp = (args: gt.ReqArgs) =>
   !corsCheck(args.req.headers.origin!)
-    ? args.res.status(403).send('CORS!')
+    ? args.res.status(403).send('CORS! :)')
     : args.next();
 
 // ------ Server:
 
-const SpotActionModel = getModel(SPOT_ACTION);
+// const SpotActionModel = getModel(SPOT_ACTION);
 
-export const starter: gt.RunServer = async (port, server, app) => {
+export const starter: gt.RunServer = async port => {
   /*
   const actions = await service.getAll(SpotActionModel);
   console.log('actions --->', actions?.length);
@@ -55,6 +55,6 @@ export const starter: gt.RunServer = async (port, server, app) => {
 
   const dbName = dbCheck(mongoose).db;
   console.log('');
-  console.log(`  server ${isLocal() ? dev : prod}:${port} -> ${dbName} `);
+  console.log(`  uni ${isLocal() ? dev : prod}:${port} -> ${dbName} `);
   console.log('');
 };

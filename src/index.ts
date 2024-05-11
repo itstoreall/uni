@@ -21,7 +21,7 @@ const { typeDefs, resolvers } = gql;
 const apollo = new ApolloServer({ typeDefs, resolvers });
 
 apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
-server.listen({ port }, () => gu.starter(String(port), server, app));
+server.listen({ port }, () => gu.starter(String(port)));
 
 app.use((e: Error, _: ex.Request, res: ex.Response, __: ex.NextFunction) => {
   const msg = e.message || 'Internal Server Error';

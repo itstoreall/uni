@@ -43,7 +43,7 @@ const server = (0, http_1.createServer)(app);
 const { typeDefs, resolvers } = graphQL_1.default;
 const apollo = new apollo_server_express_1.ApolloServer({ typeDefs, resolvers });
 apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
-server.listen({ port }, () => gu.starter(String(port), server, app));
+server.listen({ port }, () => gu.starter(String(port)));
 app.use((e, _, res, __) => {
     const msg = e.message || 'Internal Server Error';
     return res.status(500).json({ error: msg });

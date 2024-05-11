@@ -1,4 +1,4 @@
-import { Express, Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as http from 'http';
 
 export type ReqArgs = { req: Request; res: Response; next: NextFunction };
@@ -9,7 +9,7 @@ export type HttpServer = http.Server<
 >;
 
 export type RunServer = (
-  port: string,
-  server: HttpServer,
-  app: Express
+  port: string
+  // server: HttpServer,
+  // app: Express
 ) => void;
