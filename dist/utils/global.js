@@ -53,7 +53,7 @@ const { kaomoji, host } = gc.system;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os_1.default.hostname()}`;
 // const sec = '*/10 * * * * *'; // *
-const min = '*/1 * * * *'; // *
+const min = '*/10 * * * *'; // *
 // ------ is:
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
 exports.isLocal = isLocal;

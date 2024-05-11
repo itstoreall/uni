@@ -17,7 +17,7 @@ const { kaomoji, host } = gc.system;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os.hostname()}`;
 // const sec = '*/10 * * * * *'; // *
-const min = '*/1 * * * *'; // *
+const min = '*/10 * * * *'; // *
 
 // ------ is:
 
