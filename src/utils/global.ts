@@ -5,7 +5,7 @@ import * as gc from '../config/global';
 import * as gt from '../types/global';
 // import * as ge from '../enum/global';
 // import service from '../db/service';
-import getModel from '../db';
+// import getModel from '../db';
 require('dotenv').config();
 
 const corsOrigin = process.env.CORS_ORIGIN;
