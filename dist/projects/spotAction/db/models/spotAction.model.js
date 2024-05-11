@@ -22,23 +22,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const models_1 = __importDefault(require("./models"));
-const spotEnum = __importStar(require("../projects/spotAction/enum"));
-require('dotenv').config();
+const mongoose_1 = __importStar(require("mongoose"));
+const dbEnums = __importStar(require("../../enum"));
+const spotEnum = __importStar(require("../../enum"));
 const { Project } = spotEnum;
-mongoose_1.default.connect(process.env.MONGO_DB);
-const getModel = (label) => {
-    switch (label) {
-        case Project.SPOT_ACTION:
-            return models_1.default.SpotAction;
-        default:
-            return null;
-    }
-};
-exports.default = getModel;
-//# sourceMappingURL=index.js.map
+const spotSchema = new mongoose_1.Schema({
+    tokenId: Number,
+    token: String,
+    action: {
+        type: String,
+        enum: Object.values(dbEnums.Action)
+    },
+    average_price: mongoose_1.Schema.Types.Number,
+    prices: { type: [mongoose_1.Schema.Types.Number], default: [] },
+    status: String
+});
+exports.default = mongoose_1.default.model(Project.SPOT_ACTION, spotSchema);
+//# sourceMappingURL=spotAction.model.js.map

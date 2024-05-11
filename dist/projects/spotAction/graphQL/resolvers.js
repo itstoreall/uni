@@ -22,23 +22,32 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const models_1 = __importDefault(require("./models"));
-const spotEnum = __importStar(require("../projects/spotAction/enum"));
-require('dotenv').config();
+// import * as ge from '../enum/global';
+const service_1 = __importDefault(require("../../../db/service"));
+const spotEnum = __importStar(require("../enum"));
+const db_1 = __importDefault(require("../../../db"));
 const { Project } = spotEnum;
-mongoose_1.default.connect(process.env.MONGO_DB);
-const getModel = (label) => {
-    switch (label) {
-        case Project.SPOT_ACTION:
-            return models_1.default.SpotAction;
-        default:
-            return null;
+const SpotActionModel = (0, db_1.default)(Project.SPOT_ACTION);
+const resolvers = {
+    Query: {
+        getActions: () => __awaiter(void 0, void 0, void 0, function* () { return (yield service_1.default.getAll(SpotActionModel)); }),
+        getUser: (_, args) => {
+            return `User ${args.id}`;
+        }
     }
 };
-exports.default = getModel;
-//# sourceMappingURL=index.js.map
+exports.default = resolvers;
+//# sourceMappingURL=resolvers.js.map

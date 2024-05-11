@@ -1,7 +1,10 @@
 import * as projectConfig from '../../../projects/spotAction/config';
+import { Token } from '../enum';
 
 const { action } = projectConfig.spotAction;
 const { status } = projectConfig.spotAction;
+
+export type CurrentPrices = Record<Token, { usd: number }>;
 
 export type SpotAction = {
   tokenId: number;

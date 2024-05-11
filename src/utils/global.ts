@@ -1,10 +1,12 @@
 import os from 'os';
+import cron from 'node-cron';
 import mongoose from 'mongoose';
+import * as spotActionUtils from '../projects/spotAction/utils';
 // import * as projectConfig from '../projects/spotAction/config';
+// import pricesCache, { CacheKey } from '../cache/prices';
+// import fetchPrices from '../projects/spotAction/utils';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
-import { getPrices } from '../api';
-// import * as ge from '../enum/global';
 // import service from '../db/service';
 // import getModel from '../db';
 require('dotenv').config();
@@ -14,13 +16,21 @@ const { kaomoji, host } = gc.system;
 // const { SPOT_ACTION } = ge.Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os.hostname()}`;
+// const sec = '*/10 * * * * *'; // *
+const min = '*/1 * * * *'; // *
+
+// ------ is:
 
 export const isLocal = () => os.hostname().split('.').pop() === 'local';
+
+// ------ db:
 
 export const dbCheck = (mongoose: any) => {
   const isConnected = mongoose.connection.readyState === 2;
   return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
 };
+
+// ------ cors:
 
 export const corsCheck = (origin: string) =>
   corsOrigin?.split(',').includes(origin);
@@ -37,10 +47,8 @@ export const initApp = (args: gt.ReqArgs) =>
 // const SpotActionModel = getModel(SPOT_ACTION);
 
 export const starter: gt.RunServer = async port => {
-  /*
-  const res = await getPrices();
-  console.log('getPrices:', res);
-  // */
+  spotActionUtils.fetchPrices();
+  cron.schedule(min, spotActionUtils.fetchPrices);
 
   /*
   const actions = await service.getAll(SpotActionModel);

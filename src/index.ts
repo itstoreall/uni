@@ -3,22 +3,17 @@ import ex from 'express';
 import { createServer } from 'http';
 import * as gt from './types/global';
 import * as gu from './utils/global';
-import * as gc from './config/global';
+import gGql from './graphQL/global';
 import routes from './routes';
-import gql from './graphQL';
-
-const { kaomoji } = gc.system;
 
 const app: ex.Express = ex();
 const port = process.env.PORT || 4001;
 
 app.use((req, res, next) => gu.initApp({ req, res, next }));
-app.use('/healthcheck', (_, res) => res.status(200).send(kaomoji));
 app.use('/api', (_, __, next) => next(0), routes);
 
 const server: gt.HttpServer = createServer(app);
-const { typeDefs, resolvers } = gql;
-const apollo = new ApolloServer({ typeDefs, resolvers });
+const apollo = new ApolloServer({ ...gGql });
 
 apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
 server.listen({ port }, () => gu.starter(String(port)));

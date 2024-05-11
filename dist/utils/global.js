@@ -37,10 +37,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.starter = exports.initApp = exports.corsCheck = exports.dbCheck = exports.isLocal = void 0;
 const os_1 = __importDefault(require("os"));
+const node_cron_1 = __importDefault(require("node-cron"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const spotActionUtils = __importStar(require("../projects/spotAction/utils"));
 // import * as projectConfig from '../projects/spotAction/config';
+// import pricesCache, { CacheKey } from '../cache/prices';
+// import fetchPrices from '../projects/spotAction/utils';
 const gc = __importStar(require("../config/global"));
-// import * as ge from '../enum/global';
 // import service from '../db/service';
 // import getModel from '../db';
 require('dotenv').config();
@@ -49,13 +52,18 @@ const { kaomoji, host } = gc.system;
 // const { SPOT_ACTION } = ge.Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os_1.default.hostname()}`;
+// const sec = '*/10 * * * * *'; // *
+const min = '*/1 * * * *'; // *
+// ------ is:
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
 exports.isLocal = isLocal;
+// ------ db:
 const dbCheck = (mongoose) => {
     const isConnected = mongoose.connection.readyState === 2;
     return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
 };
 exports.dbCheck = dbCheck;
+// ------ cors:
 const corsCheck = (origin) => corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(origin);
 exports.corsCheck = corsCheck;
 // ------ App (Express):
@@ -66,10 +74,8 @@ exports.initApp = initApp;
 // ------ Server:
 // const SpotActionModel = getModel(SPOT_ACTION);
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
-    /*
-    const res = await getPrices();
-    console.log('getPrices:', res);
-    // */
+    spotActionUtils.fetchPrices();
+    node_cron_1.default.schedule(min, spotActionUtils.fetchPrices);
     /*
     const actions = await service.getAll(SpotActionModel);
     console.log('actions --->', actions?.length);
