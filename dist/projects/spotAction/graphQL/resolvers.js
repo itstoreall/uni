@@ -40,18 +40,27 @@ const service_1 = __importDefault(require("../../../db/service"));
 const spotEnum = __importStar(require("../enum"));
 const db_1 = __importDefault(require("../../../db"));
 const { Project } = spotEnum;
-const SpotActionModel = (0, db_1.default)(Project.SPOT_ACTION);
+const ActionModel = (0, db_1.default)(Project.SPOT_ACTION);
 const resolvers = {
     Query: {
-        getActions: () => __awaiter(void 0, void 0, void 0, function* () { return (yield service_1.default.getAll(SpotActionModel)); }),
+        getActions: () => __awaiter(void 0, void 0, void 0, function* () {
+            const params = { model: ActionModel };
+            return (yield service_1.default.getAll(params));
+        }),
+        getActionByID: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            console.log(2);
+            const params = { model: ActionModel, id: args.id };
+            return yield service_1.default.getByID(params);
+        }),
         getUser: (_, args) => {
             return `User ${args.id}`;
         }
     },
     Mutation: {
-        addAction: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log('input ->', args.input);
-            const addedAction = yield service_1.default.create(SpotActionModel, args.input);
+        addAction: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { input }) {
+            console.log('input ->', input);
+            const params = { model: ActionModel, input };
+            const addedAction = yield service_1.default.create(params);
             console.log('addedAction:', addedAction);
             return addedAction;
         })

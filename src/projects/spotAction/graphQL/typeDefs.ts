@@ -47,6 +47,7 @@ const typeDefs = gql`
   type Query {
     getUser(id: ID!): String
     getActions: [Action]
+    getActionByID(id: ID!): Action
   }
 
   type Mutation {

@@ -5,12 +5,20 @@ import getModel from '../../../db';
 import * as t from '../types';
 
 const { Project } = spotEnum;
-const SpotActionModel = getModel(Project.SPOT_ACTION);
+const ActionModel = getModel(Project.SPOT_ACTION);
 
 const resolvers = {
   Query: {
-    getActions: async () =>
-      (await service.getAll(SpotActionModel)) as t.SpotAction[],
+    getActions: async () => {
+      const params = { model: ActionModel };
+      return (await service.getAll(params)) as t.SpotAction[];
+    },
+
+    getActionByID: async (_: any, args: { id: any }) => {
+      console.log(2);
+      const params = { model: ActionModel, id: args.id };
+      return await service.getByID(params);
+    },
 
     getUser: (_: any, args: any) => {
       return `User ${args.id}`;
@@ -18,9 +26,10 @@ const resolvers = {
   },
 
   Mutation: {
-    addAction: async (_: any, args: { input: t.SpotAction }) => {
-      console.log('input ->', args.input);
-      const addedAction = await service.create(SpotActionModel, args.input);
+    addAction: async (_: any, { input }: { input: t.SpotAction }) => {
+      console.log('input ->', input);
+      const params = { model: ActionModel, input };
+      const addedAction = await service.create(params);
       console.log('addedAction:', addedAction);
       return addedAction as t.SpotAction;
     }

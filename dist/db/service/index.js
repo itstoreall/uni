@@ -9,9 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const getAll = (model) => __awaiter(void 0, void 0, void 0, function* () {
+const getAll = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
     return yield model.find({});
 });
-const create = (model, input) => __awaiter(void 0, void 0, void 0, function* () { return yield model.create(input); });
-exports.default = { getAll, create };
+// const getAll = async (model: typeof Model): t.SpotActionRes => {
+//   return await model.find({});
+// };
+const getByID = (_b) => __awaiter(void 0, [_b], void 0, function* ({ model, id }) {
+    return yield model.findById(id);
+});
+const create = (_c) => __awaiter(void 0, [_c], void 0, function* ({ model, input }) { return yield model.create(input); });
+exports.default = { getAll, getByID, create };
 //# sourceMappingURL=index.js.map

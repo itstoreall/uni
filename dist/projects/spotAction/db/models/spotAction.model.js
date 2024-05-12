@@ -34,17 +34,22 @@ const required = (ts, rest) => {
     return Object.assign({ type: ts, required: true }, rest);
 };
 const setEnum = (enm) => {
-    return { enum: Object.values(enm) };
+    return { enum: Object.values(enm), lowercase: true };
+};
+const setDate = (immutable, dateNow) => {
+    return { type: Date, immutable, default: dateNow };
 };
 const spotSchema = new mongoose_1.default.Schema({
-    tokenId: required(Number),
+    tokenId: required(Number, { min: 1 }),
     token: required(String),
     action: required(String, setEnum(spotEnum.Action)),
     average_price: required(Number),
     current_price: required(Number),
     prices: required([Number], { default: [] }),
     percent: required(Number),
-    status: required(String, setEnum(spotEnum.Status))
+    status: required(String, setEnum(spotEnum.Status)),
+    createdAt: required(Date, setDate(true, Date.now())),
+    updatedAt: required(Date, setDate(false, Date.now()))
 });
 exports.default = mongoose_1.default.model(Project.SPOT_ACTION, spotSchema);
 //# sourceMappingURL=spotAction.model.js.map
