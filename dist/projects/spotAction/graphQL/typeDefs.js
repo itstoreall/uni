@@ -25,7 +25,9 @@ const typeDefs = (0, apollo_server_express_1.gql) `
     token: String
     action: EAction
     average_price: Float
+    current_price: Float
     prices: [Float]
+    percent: Float
     status: EStatus
   }
 
@@ -37,7 +39,9 @@ const typeDefs = (0, apollo_server_express_1.gql) `
     token: String!
     action: EAction!
     average_price: Float
+    current_price: Float
     prices: [Float]
+    percent: Float
     status: EStatus!
   }
 
@@ -47,7 +51,7 @@ const typeDefs = (0, apollo_server_express_1.gql) `
   }
 
   type Mutation {
-    createAction(input: ActionInput!): Action
+    addAction(input: ActionInput!): Action
   }
 `;
 exports.default = typeDefs;

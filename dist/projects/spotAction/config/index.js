@@ -23,23 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.spotAction = exports.url = exports.coingeckoBaseURL = void 0;
+exports.url = exports.coingeckoBaseURL = exports.spotAction = void 0;
 const spotEnum = __importStar(require("../enum"));
 const { Project, Token } = spotEnum;
+exports.spotAction = {
+    label: Project.SPOT_ACTION
+};
 const tokens = Object.values(Token).join(',');
-// const tokens = [
-//   'bitcoin',
-//   'litecoin',
-//   'ethereum',
-//   'avalanche-2',
-//   'solana',
-//   'near'
-// ].join(',');
 exports.coingeckoBaseURL = 'https://api.coingecko.com/api/v3/';
 exports.url = `${'simple/price'}?ids=${tokens}&vs_currencies=${'usd'}`;
-exports.spotAction = {
-    label: Project.SPOT_ACTION,
-    action: spotEnum.Action,
-    status: spotEnum.Status
-};
 //# sourceMappingURL=index.js.map

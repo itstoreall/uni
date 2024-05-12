@@ -12,6 +12,8 @@ export const fetchPrices = async () => {
   try {
     const prices: CurrentPrices = await api.getPrices();
     cache.setCache(pricesKey, prices);
+
+    console.log(1, prices);
   } catch (e) {
     console.error('ERROR in fetchPrices:', e);
   }

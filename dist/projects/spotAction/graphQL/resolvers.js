@@ -47,6 +47,21 @@ const resolvers = {
         getUser: (_, args) => {
             return `User ${args.id}`;
         }
+    },
+    Mutation: {
+        addAction: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            console.log('input ->', args.input);
+            const addedAction = yield service_1.default.create(SpotActionModel, args.input);
+            console.log('addedAction:', addedAction);
+            return addedAction;
+        })
+        /*
+        updateUser: async (_: any, args: { id: string; input: t.UserInput }) => {
+          // Assuming you have a service method to update a user and it returns the updated user
+          const updatedUser = await service.updateUser(args.id, args.input);
+          return updatedUser;
+        }
+        */
     }
 };
 exports.default = resolvers;

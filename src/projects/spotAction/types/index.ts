@@ -1,18 +1,16 @@
-import * as projectConfig from '../../../projects/spotAction/config';
-import { Token } from '../enum';
-
-const { action } = projectConfig.spotAction;
-const { status } = projectConfig.spotAction;
+import { Token, Action, Status } from '../enum';
 
 export type CurrentPrices = Record<Token, { usd: number }>;
 
 export type SpotAction = {
   tokenId: number;
   token: string;
-  action: typeof action;
+  action: Action;
   average_price: number;
+  current_price: number;
   prices: number[];
-  status: typeof status;
+  percent: number;
+  status: Status;
 };
 
 export type SpotActionRes = Promise<SpotAction[]>;

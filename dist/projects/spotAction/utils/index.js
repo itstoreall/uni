@@ -43,6 +43,7 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const prices = yield api.getPrices();
         cache.setCache(pricesKey, prices);
+        console.log(1, prices);
     }
     catch (e) {
         console.error('ERROR in fetchPrices:', e);

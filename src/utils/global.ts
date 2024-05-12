@@ -2,18 +2,21 @@ import os from 'os';
 import cron from 'node-cron';
 import mongoose from 'mongoose';
 import * as spotActionUtils from '../projects/spotAction/utils';
-// import * as projectConfig from '../projects/spotAction/config';
+import * as projectConfig from '../projects/spotAction/config';
 // import pricesCache, { CacheKey } from '../cache/prices';
 // import fetchPrices from '../projects/spotAction/utils';
+import * as spotActionEnum from '../projects/spotAction/enum';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
-// import service from '../db/service';
-// import getModel from '../db';
+import service from '../db/service';
+import getModel from '../db';
 require('dotenv').config();
+
+const { Project, Action, Status } = spotActionEnum;
 
 const corsOrigin = process.env.CORS_ORIGIN;
 const { kaomoji, host } = gc.system;
-// const { SPOT_ACTION } = ge.Project;
+const { SPOT_ACTION } = Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os.hostname()}`;
 // const sec = '*/10 * * * * *'; // *
@@ -44,7 +47,7 @@ export const initApp = (args: gt.ReqArgs) =>
 
 // ------ Server:
 
-// const SpotActionModel = getModel(SPOT_ACTION);
+const SpotActionModel = getModel(SPOT_ACTION);
 
 export const starter: gt.RunServer = async port => {
   spotActionUtils.fetchPrices();
@@ -52,17 +55,17 @@ export const starter: gt.RunServer = async port => {
 
   /*
   const actions = await service.getAll(SpotActionModel);
-  console.log('actions --->', actions?.length);
+  console.log('actions --->', actions);
   // */
 
   /*
   const action = await service.create(SpotActionModel, {
     tokenId: 4,
     token: 'avax',
-    action: projectConfig.spotAction.action.BUY,
+    action: Action.BUY,
     average_price: 15.5,
     prices: [10, 21],
-    status: projectConfig.spotAction.status.INVESTED
+    status: Status.INVESTED
   });
   console.log('action ->', action);
   // */

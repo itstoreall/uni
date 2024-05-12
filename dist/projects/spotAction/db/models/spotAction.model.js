@@ -22,21 +22,29 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const dbEnums = __importStar(require("../../enum"));
+const mongoose_1 = __importDefault(require("mongoose"));
 const spotEnum = __importStar(require("../../enum"));
 const { Project } = spotEnum;
-const spotSchema = new mongoose_1.Schema({
-    tokenId: Number,
-    token: String,
-    action: {
-        type: String,
-        enum: Object.values(dbEnums.Action)
-    },
-    average_price: mongoose_1.Schema.Types.Number,
-    prices: { type: [mongoose_1.Schema.Types.Number], default: [] },
-    status: String
+const { String, Number } = mongoose_1.default.Schema.Types;
+const required = (ts, rest) => {
+    return Object.assign({ type: ts, required: true }, rest);
+};
+const setEnum = (enm) => {
+    return { enum: Object.values(enm) };
+};
+const spotSchema = new mongoose_1.default.Schema({
+    tokenId: required(Number),
+    token: required(String),
+    action: required(String, setEnum(spotEnum.Action)),
+    average_price: required(Number),
+    current_price: required(Number),
+    prices: required([Number], { default: [] }),
+    percent: required(Number),
+    status: required(String, setEnum(spotEnum.Status))
 });
 exports.default = mongoose_1.default.model(Project.SPOT_ACTION, spotSchema);
 //# sourceMappingURL=spotAction.model.js.map

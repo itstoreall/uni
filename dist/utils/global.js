@@ -40,16 +40,16 @@ const os_1 = __importDefault(require("os"));
 const node_cron_1 = __importDefault(require("node-cron"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const spotActionUtils = __importStar(require("../projects/spotAction/utils"));
-// import * as projectConfig from '../projects/spotAction/config';
 // import pricesCache, { CacheKey } from '../cache/prices';
 // import fetchPrices from '../projects/spotAction/utils';
+const spotActionEnum = __importStar(require("../projects/spotAction/enum"));
 const gc = __importStar(require("../config/global"));
-// import service from '../db/service';
-// import getModel from '../db';
+const db_1 = __importDefault(require("../db"));
 require('dotenv').config();
+const { Project, Action, Status } = spotActionEnum;
 const corsOrigin = process.env.CORS_ORIGIN;
 const { kaomoji, host } = gc.system;
-// const { SPOT_ACTION } = ge.Project;
+const { SPOT_ACTION } = Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os_1.default.hostname()}`;
 // const sec = '*/10 * * * * *'; // *
@@ -72,22 +72,22 @@ const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
     : args.next();
 exports.initApp = initApp;
 // ------ Server:
-// const SpotActionModel = getModel(SPOT_ACTION);
+const SpotActionModel = (0, db_1.default)(SPOT_ACTION);
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
     spotActionUtils.fetchPrices();
     node_cron_1.default.schedule(min, spotActionUtils.fetchPrices);
     /*
     const actions = await service.getAll(SpotActionModel);
-    console.log('actions --->', actions?.length);
+    console.log('actions --->', actions);
     // */
     /*
     const action = await service.create(SpotActionModel, {
       tokenId: 4,
       token: 'avax',
-      action: projectConfig.spotAction.action.BUY,
+      action: Action.BUY,
       average_price: 15.5,
       prices: [10, 21],
-      status: projectConfig.spotAction.status.INVESTED
+      status: Status.INVESTED
     });
     console.log('action ->', action);
     // */

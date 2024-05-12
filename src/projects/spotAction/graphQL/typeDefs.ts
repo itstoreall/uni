@@ -24,7 +24,9 @@ const typeDefs = gql`
     token: String
     action: EAction
     average_price: Float
+    current_price: Float
     prices: [Float]
+    percent: Float
     status: EStatus
   }
 
@@ -36,7 +38,9 @@ const typeDefs = gql`
     token: String!
     action: EAction!
     average_price: Float
+    current_price: Float
     prices: [Float]
+    percent: Float
     status: EStatus!
   }
 
@@ -46,7 +50,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createAction(input: ActionInput!): Action
+    addAction(input: ActionInput!): Action
   }
 `;
 
