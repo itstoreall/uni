@@ -7,7 +7,7 @@ const { Project } = spotEnum;
 
 mongoose.connect(process.env.MONGO_DB);
 
-const getModel = (label: string) => {
+export const getModel = (label: string) => {
   switch (label) {
     case Project.SPOT_ACTION:
       return model.SpotAction;
@@ -17,4 +17,4 @@ const getModel = (label: string) => {
   }
 };
 
-export default getModel;
+// export default getModel;

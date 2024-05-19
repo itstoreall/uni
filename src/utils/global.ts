@@ -9,7 +9,7 @@ import * as spotActionEnum from '../projects/spotAction/enum';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
 import service from '../db/service';
-import getModel from '../db';
+import { getModel } from '../db';
 require('dotenv').config();
 
 const { Project, Action, Status } = spotActionEnum;
@@ -54,20 +54,46 @@ export const starter: gt.RunServer = async port => {
   cron.schedule(min, spotActionUtils.fetchPrices);
 
   /*
-  const actions = await service.getAll(SpotActionModel);
+  const params = { model: SpotActionModel };
+  const actions = await service.getAll(params);
+  console.log('all actions --->', actions);
+  // */
+
+  /*
+  const params = { model: SpotActionModel, status: 'withdrawn' };
+  const actions = await service.getByStatus(params);
   console.log('actions --->', actions);
   // */
 
   /*
-  const action = await service.create(SpotActionModel, {
-    tokenId: 4,
-    token: 'avax',
-    action: Action.BUY,
-    average_price: 15.5,
-    prices: [10, 21],
-    status: Status.INVESTED
-  });
+  const params = { model: SpotActionModel, id: '66378383526c576e5564afd6' };
+  const exists = await service.existsByID(params);
+  console.log('exists --->', exists);
+  // console.log('exists --->', exists._id.toString());
+  // */
+
+  /*
+  const params = {
+    model: SpotActionModel,
+    input: {
+      tokenId: 5,
+      token: 'sol',
+      action: Action.BUY,
+      average_price: 15.5,
+      current_price: 15.5,
+      prices: [10, 21],
+      percent: 8,
+      status: Status.INVESTED
+    }
+  };
+  const action = await service.create(params);
   console.log('action ->', action);
+  // */
+
+  /*
+  const params = { model: SpotActionModel, id: '6649e97333421268d15351d2' };
+  const daleted = (await service.removeByID(params)).deletedCount; // 0 or 1
+  console.log('daleted ->', daleted);
   // */
 
   const dbName = dbCheck(mongoose).db;

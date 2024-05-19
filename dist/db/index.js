@@ -26,6 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getModel = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const models_1 = __importDefault(require("./models"));
 const spotEnum = __importStar(require("../projects/spotAction/enum"));
@@ -40,5 +41,6 @@ const getModel = (label) => {
             return null;
     }
 };
-exports.default = getModel;
+exports.getModel = getModel;
+// export default getModel;
 //# sourceMappingURL=index.js.map

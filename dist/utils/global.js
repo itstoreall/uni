@@ -44,7 +44,7 @@ const spotActionUtils = __importStar(require("../projects/spotAction/utils"));
 // import fetchPrices from '../projects/spotAction/utils';
 const spotActionEnum = __importStar(require("../projects/spotAction/enum"));
 const gc = __importStar(require("../config/global"));
-const db_1 = __importDefault(require("../db"));
+const db_1 = require("../db");
 require('dotenv').config();
 const { Project, Action, Status } = spotActionEnum;
 const corsOrigin = process.env.CORS_ORIGIN;
@@ -72,24 +72,47 @@ const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
     : args.next();
 exports.initApp = initApp;
 // ------ Server:
-const SpotActionModel = (0, db_1.default)(SPOT_ACTION);
+const SpotActionModel = (0, db_1.getModel)(SPOT_ACTION);
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
     spotActionUtils.fetchPrices();
     node_cron_1.default.schedule(min, spotActionUtils.fetchPrices);
     /*
-    const actions = await service.getAll(SpotActionModel);
+    const params = { model: SpotActionModel };
+    const actions = await service.getAll(params);
+    console.log('all actions --->', actions);
+    // */
+    /*
+    const params = { model: SpotActionModel, status: 'withdrawn' };
+    const actions = await service.getByStatus(params);
     console.log('actions --->', actions);
     // */
     /*
-    const action = await service.create(SpotActionModel, {
-      tokenId: 4,
-      token: 'avax',
-      action: Action.BUY,
-      average_price: 15.5,
-      prices: [10, 21],
-      status: Status.INVESTED
-    });
+    const params = { model: SpotActionModel, id: '66378383526c576e5564afd6' };
+    const exists = await service.existsByID(params);
+    console.log('exists --->', exists);
+    // console.log('exists --->', exists._id.toString());
+    // */
+    /*
+    const params = {
+      model: SpotActionModel,
+      input: {
+        tokenId: 5,
+        token: 'sol',
+        action: Action.BUY,
+        average_price: 15.5,
+        current_price: 15.5,
+        prices: [10, 21],
+        percent: 8,
+        status: Status.INVESTED
+      }
+    };
+    const action = await service.create(params);
     console.log('action ->', action);
+    // */
+    /*
+    const params = { model: SpotActionModel, id: '6649e97333421268d15351d2' };
+    const daleted = (await service.removeByID(params)).deletedCount; // 0 or 1
+    console.log('daleted ->', daleted);
     // */
     const dbName = (0, exports.dbCheck)(mongoose_1.default).db;
     console.log('');

@@ -10,14 +10,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const getAll = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
-    return yield model.find({});
+    return yield makeRequest(() => model.find({}));
 });
-// const getAll = async (model: typeof Model): t.SpotActionRes => {
-//   return await model.find({});
-// };
 const getByID = (_b) => __awaiter(void 0, [_b], void 0, function* ({ model, id }) {
-    return yield model.findById(id);
+    return yield makeRequest(() => model.findById(id));
 });
-const create = (_c) => __awaiter(void 0, [_c], void 0, function* ({ model, input }) { return yield model.create(input); });
-exports.default = { getAll, getByID, create };
+const getByStatus = (_c) => __awaiter(void 0, [_c], void 0, function* ({ model, status }) {
+    return yield makeRequest(() => model.find({ status }));
+});
+const existsByID = (_d) => __awaiter(void 0, [_d], void 0, function* ({ model, id }) {
+    return yield makeRequest(() => model.exists({ _id: id }));
+});
+const create = (_e) => __awaiter(void 0, [_e], void 0, function* ({ model, input }) {
+    return yield makeRequest(() => model.create(input));
+});
+const removeByID = (_f) => __awaiter(void 0, [_f], void 0, function* ({ model, id }) {
+    return yield makeRequest(() => model.deleteOne({ _id: id }));
+});
+const makeRequest = (cb) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield cb();
+    }
+    catch (e) {
+        throw new Error('((((((');
+    }
+});
+exports.default = {
+    getAll,
+    getByID,
+    getByStatus,
+    existsByID,
+    create,
+    removeByID
+};
 //# sourceMappingURL=index.js.map

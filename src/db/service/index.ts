@@ -5,21 +5,49 @@ export type ModelArg = { model: typeof Model };
 
 export type CreateArgs = ModelArg & { input: t.SpotAction };
 
-export type GetByIDArgs = ModelArg & { id: string };
+export type IDArgs = ModelArg & { id: string };
 
-const getAll = async ({ model }: ModelArg): t.SpotActionRes => {
-  return await model.find({});
+export type GetByStatusArgs = ModelArg & { status: string };
+
+export type MakeRequest = <T>(cb: () => Promise<T>) => Promise<T>;
+
+const getAll = async ({ model }: ModelArg) => {
+  return await makeRequest(() => model.find({}));
 };
 
-// const getAll = async (model: typeof Model): t.SpotActionRes => {
-//   return await model.find({});
-// };
-
-const getByID = async ({ model, id }: GetByIDArgs) => {
-  return await model.findById(id);
+const getByID = async ({ model, id }: IDArgs) => {
+  return await makeRequest(() => model.findById(id));
 };
 
-const create = async ({ model, input }: CreateArgs) =>
-  await model.create(input);
+const getByStatus = async ({ model, status }: GetByStatusArgs) => {
+  return await makeRequest(() => model.find({ status }));
+};
 
-export default { getAll, getByID, create };
+const existsByID = async ({ model, id }: IDArgs) => {
+  return await makeRequest(() => model.exists({ _id: id }));
+};
+
+const create = async ({ model, input }: CreateArgs) => {
+  return await makeRequest(() => model.create(input));
+};
+
+const removeByID = async ({ model, id }: IDArgs) => {
+  return await makeRequest(() => model.deleteOne({ _id: id }));
+};
+
+const makeRequest: MakeRequest = async cb => {
+  try {
+    return await cb();
+  } catch (e) {
+    throw new Error('((((((');
+  }
+};
+
+export default {
+  getAll,
+  getByID,
+  getByStatus,
+  existsByID,
+  create,
+  removeByID
+};
