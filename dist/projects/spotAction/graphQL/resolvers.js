@@ -38,9 +38,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import * as ge from '../enum/global';
 const service_1 = __importDefault(require("../../../db/service"));
 const spotEnum = __importStar(require("../enum"));
-const db_1 = __importDefault(require("../../../db"));
+const db_1 = require("../../../db");
 const { Project } = spotEnum;
-const ActionModel = (0, db_1.default)(Project.SPOT_ACTION);
+const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
 const resolvers = {
     Query: {
         getActions: () => __awaiter(void 0, void 0, void 0, function* () {

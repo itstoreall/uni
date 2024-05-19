@@ -1,7 +1,7 @@
 // import * as ge from '../enum/global';
 import service from '../../../db/service';
 import * as spotEnum from '../enum';
-import getModel from '../../../db';
+import { getModel } from '../../../db';
 import * as t from '../types';
 
 const { Project } = spotEnum;
