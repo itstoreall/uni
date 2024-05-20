@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// ------
 const getAll = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
     return yield makeRequest(() => model.find({}));
 });
@@ -24,7 +25,10 @@ const existsByID = (_d) => __awaiter(void 0, [_d], void 0, function* ({ model, i
 const create = (_e) => __awaiter(void 0, [_e], void 0, function* ({ model, input }) {
     return yield makeRequest(() => model.create(input));
 });
-const removeByID = (_f) => __awaiter(void 0, [_f], void 0, function* ({ model, id }) {
+const updateByID = (_f) => __awaiter(void 0, [_f], void 0, function* ({ model, id, input }) {
+    return yield makeRequest(() => model.create({ _id: id }, Object.assign({}, input)));
+});
+const removeByID = (_g) => __awaiter(void 0, [_g], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.deleteOne({ _id: id }));
 });
 const makeRequest = (cb) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,6 +45,7 @@ exports.default = {
     getByStatus,
     existsByID,
     create,
+    updateByID,
     removeByID
 };
 //# sourceMappingURL=index.js.map

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import * as gu from '../../../utils/global';
-import * as ga from '../../../api/global';
+import * as gApi from '../../../api/global';
 import * as c from '../config';
 
 axios.defaults.baseURL = c.coingeckoBaseURL;
 
-const { GET } = ga.Method;
+const { GET } = gApi.Method;
 
 export const getPrices = async () => {
   const config = { method: GET, url: c.url };
@@ -18,5 +18,5 @@ export const getPrices = async () => {
         solana: { usd: 145.55 },
         near: { usd: 7.66 }
       }
-    : ga.makeRequest(config);
+    : gApi.makeRequest(config);
 };
