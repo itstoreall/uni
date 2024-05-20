@@ -37,22 +37,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.starter = exports.initApp = exports.corsCheck = exports.dbCheck = exports.isLocal = void 0;
 const os_1 = __importDefault(require("os"));
-const node_cron_1 = __importDefault(require("node-cron"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const spotActionUtils = __importStar(require("../projects/spotAction/utils"));
-// import pricesCache, { CacheKey } from '../cache/prices';
-// import fetchPrices from '../projects/spotAction/utils';
-const spotActionEnum = __importStar(require("../projects/spotAction/enum"));
 const gc = __importStar(require("../config/global"));
-const db_1 = require("../db");
+const cron_1 = __importDefault(require("../utils/cron"));
 require('dotenv').config();
-const { Project, Action, Status } = spotActionEnum;
 const corsOrigin = process.env.CORS_ORIGIN;
 const { kaomoji, host } = gc.system;
-const { SPOT_ACTION } = Project;
 const dev = `${kaomoji} http://${host.local}`;
 const prod = `http://${os_1.default.hostname()}`;
-// const sec = '*/10 * * * * *'; // *
 const min = '*/10 * * * *'; // *
 // ------ is:
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
@@ -72,48 +65,9 @@ const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
     : args.next();
 exports.initApp = initApp;
 // ------ Server:
-const SpotActionModel = (0, db_1.getModel)(SPOT_ACTION);
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
-    spotActionUtils.fetchPrices();
-    node_cron_1.default.schedule(min, spotActionUtils.fetchPrices);
-    /*
-    const params = { model: SpotActionModel };
-    const actions = await service.getAll(params);
-    console.log('all actions --->', actions);
-    // */
-    /*
-    const params = { model: SpotActionModel, status: 'withdrawn' };
-    const actions = await service.getByStatus(params);
-    console.log('actions --->', actions);
-    // */
-    /*
-    const params = { model: SpotActionModel, id: '66378383526c576e5564afd6' };
-    const exists = await service.existsByID(params);
-    console.log('exists --->', exists);
-    // console.log('exists --->', exists._id.toString());
-    // */
-    /*
-    const params = {
-      model: SpotActionModel,
-      input: {
-        tokenId: 5,
-        token: 'sol',
-        action: Action.BUY,
-        average_price: 15.5,
-        current_price: 15.5,
-        prices: [10, 21],
-        percent: 8,
-        status: Status.INVESTED
-      }
-    };
-    const action = await service.create(params);
-    console.log('action ->', action);
-    // */
-    /*
-    const params = { model: SpotActionModel, id: '6649e97333421268d15351d2' };
-    const daleted = (await service.removeByID(params)).deletedCount; // 0 or 1
-    console.log('daleted ->', daleted);
-    // */
+    spotActionUtils.cronFn();
+    (0, cron_1.default)(min, spotActionUtils.cronFn);
     const dbName = (0, exports.dbCheck)(mongoose_1.default).db;
     console.log('');
     console.log(`  uni ${(0, exports.isLocal)() ? dev : prod}:${port} -> ${dbName} `);

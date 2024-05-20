@@ -38,10 +38,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPrices = void 0;
 const axios_1 = __importDefault(require("axios"));
 const gu = __importStar(require("../../../utils/global"));
-const ga = __importStar(require("../../../api/global"));
+const gApi = __importStar(require("../../../api/global"));
 const c = __importStar(require("../config"));
 axios_1.default.defaults.baseURL = c.coingeckoBaseURL;
-const { GET } = ga.Method;
+const { GET } = gApi.Method;
 const getPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     const config = { method: GET, url: c.url };
     return gu.isLocal()
@@ -53,7 +53,7 @@ const getPrices = () => __awaiter(void 0, void 0, void 0, function* () {
             solana: { usd: 145.55 },
             near: { usd: 7.66 }
         }
-        : ga.makeRequest(config);
+        : gApi.makeRequest(config);
 });
 exports.getPrices = getPrices;
 //# sourceMappingURL=index.js.map
