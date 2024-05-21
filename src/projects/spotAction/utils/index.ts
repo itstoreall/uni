@@ -1,19 +1,24 @@
+import { getIntlDate } from '../../../utils/getIntlDate';
 import service from '../../../db/service';
 import { getModel } from '../../../db';
-import * as spotActionEnum from '../enum';
 import { CurrentPrices } from '../types';
+// import * as gu from '../../../utils/global';
+import * as projEnum from '../enum';
 import * as cache from '../cache';
 import * as api from '../api';
 
-const { Project, Action, Status } = spotActionEnum;
+const { Project, Action, Status, Token, Symbol } = projEnum;
 const { SPOT_ACTION } = Project;
 const SpotActionModel = getModel(SPOT_ACTION);
 const { cacheKey } = cache;
 
 export const cronFn = async () => {
   const prices = await fetchPrices();
-  console.log('* cronFn');
-  console.log('prices:', prices);
+  const isUpdated = await updatePrices(prices);
+
+  if (!isUpdated) return;
+
+  console.log('updated ====>', isUpdated);
 
   /*
   const actions = await getAllActions();
@@ -24,10 +29,15 @@ export const cronFn = async () => {
   */
 };
 
+// ------ Prices:
+
 export const fetchPrices = async () => {
   const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
-  // const cachedPrices = cache.getCache(pricesKey);
-  // console.log('cachedPrices:', cachedPrices);
+
+  /* ------ Cache:
+  const cachedPrices = cache.getCache(pricesKey); // *
+  console.log('cachedPrices:', cachedPrices); // *
+  */
 
   try {
     const prices: CurrentPrices = await api.getPrices();
@@ -37,6 +47,39 @@ export const fetchPrices = async () => {
     console.error('ERROR in fetchPrices:', e);
   }
 };
+
+export const updatePrices = async (prices: CurrentPrices) => {
+  // console.log('prices:', prices);
+
+  const actions = await getAllActions();
+
+  const priceMap = {
+    [Symbol.BTC]: prices[Token.BITCOIN].usd,
+    [Symbol.ETH]: prices[Token.ETHEREUM].usd,
+    [Symbol.LTC]: prices[Token.LITECOIN].usd,
+    [Symbol.AVAX]: prices[Token.AVALANCHE].usd
+  };
+
+  let count = 0;
+
+  for (const action of actions) {
+    const newPrice = priceMap[action.token as keyof typeof priceMap];
+
+    if (newPrice) {
+      action.current_price = newPrice;
+      action.percent = 7;
+      action.updatedAt = getIntlDate();
+
+      const updatedAction = await action.save();
+
+      if (updatedAction.token === action.token) count += 1;
+    }
+  }
+
+  return count === actions.length;
+};
+
+// ------ Actions:
 
 export const getAllActions = async () => {
   const params = { model: SpotActionModel };

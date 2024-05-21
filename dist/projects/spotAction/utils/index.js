@@ -35,20 +35,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeAction = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.fetchPrices = exports.cronFn = void 0;
+exports.removeAction = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.updatePrices = exports.fetchPrices = exports.cronFn = void 0;
+const getIntlDate_1 = require("../../../utils/getIntlDate");
 const service_1 = __importDefault(require("../../../db/service"));
 const db_1 = require("../../../db");
-const spotActionEnum = __importStar(require("../enum"));
+// import * as gu from '../../../utils/global';
+const projEnum = __importStar(require("../enum"));
 const cache = __importStar(require("../cache"));
 const api = __importStar(require("../api"));
-const { Project, Action, Status } = spotActionEnum;
+const { Project, Action, Status, Token, Symbol } = projEnum;
 const { SPOT_ACTION } = Project;
 const SpotActionModel = (0, db_1.getModel)(SPOT_ACTION);
 const { cacheKey } = cache;
 const cronFn = () => __awaiter(void 0, void 0, void 0, function* () {
     const prices = yield (0, exports.fetchPrices)();
-    console.log('* cronFn');
-    console.log('prices:', prices);
+    const isUpdated = yield (0, exports.updatePrices)(prices);
+    if (!isUpdated)
+        return;
+    console.log('updated ====>', isUpdated);
     /*
     const actions = await getAllActions();
     const actions = await getByStatus();
@@ -58,10 +62,13 @@ const cronFn = () => __awaiter(void 0, void 0, void 0, function* () {
     */
 });
 exports.cronFn = cronFn;
+// ------ Prices:
 const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     const pricesKey = cacheKey.spotActionPrices;
-    // const cachedPrices = cache.getCache(pricesKey);
-    // console.log('cachedPrices:', cachedPrices);
+    /* ------ Cache:
+    const cachedPrices = cache.getCache(pricesKey); // *
+    console.log('cachedPrices:', cachedPrices); // *
+    */
     try {
         const prices = yield api.getPrices();
         cache.setCache(pricesKey, prices);
@@ -72,6 +79,31 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.fetchPrices = fetchPrices;
+const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log('prices:', prices);
+    const actions = yield (0, exports.getAllActions)();
+    const priceMap = {
+        [Symbol.BTC]: prices[Token.BITCOIN].usd,
+        [Symbol.ETH]: prices[Token.ETHEREUM].usd,
+        [Symbol.LTC]: prices[Token.LITECOIN].usd,
+        [Symbol.AVAX]: prices[Token.AVALANCHE].usd
+    };
+    let count = 0;
+    for (const action of actions) {
+        const newPrice = priceMap[action.token];
+        if (newPrice) {
+            action.current_price = newPrice;
+            action.percent = 7;
+            action.updatedAt = (0, getIntlDate_1.getIntlDate)();
+            const updatedAction = yield action.save();
+            if (updatedAction.token === action.token)
+                count += 1;
+        }
+    }
+    return count === actions.length;
+});
+exports.updatePrices = updatePrices;
+// ------ Actions:
 const getAllActions = () => __awaiter(void 0, void 0, void 0, function* () {
     const params = { model: SpotActionModel };
     return yield service_1.default.getAll(params);

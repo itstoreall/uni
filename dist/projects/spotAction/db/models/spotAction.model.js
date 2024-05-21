@@ -49,7 +49,7 @@ const spotSchema = new mongoose_1.default.Schema({
     percent: required(Number),
     status: required(String, setEnum(spotEnum.Status)),
     createdAt: required(Date, setDate(true, Date.now())),
-    updatedAt: required(Date, setDate(false, Date.now()))
+    updatedAt: required(String)
 });
 exports.default = mongoose_1.default.model(Project.SPOT_ACTION, spotSchema);
 //# sourceMappingURL=spotAction.model.js.map

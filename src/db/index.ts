@@ -1,11 +1,14 @@
-import mongoose from 'mongoose';
-import model from './models';
+import mongoose, { ConnectOptions } from 'mongoose';
 import * as spotEnum from '../projects/spotAction/enum';
+import model from './models';
 require('dotenv').config();
 
 const { Project } = spotEnum;
 
-mongoose.connect(process.env.MONGO_DB);
+mongoose.connect(process.env.MONGO_DB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+} as ConnectOptions);
 
 export const getModel = (label: string) => {
   switch (label) {
@@ -16,5 +19,3 @@ export const getModel = (label: string) => {
       return null;
   }
 };
-
-// export default getModel;
