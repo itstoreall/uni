@@ -60,9 +60,12 @@ exports.dbCheck = dbCheck;
 const corsCheck = (origin) => corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(origin);
 exports.corsCheck = corsCheck;
 // ------ App (Express):
-const initApp = (args) => !(0, exports.corsCheck)(args.req.headers.origin)
-    ? args.res.status(403).send(`uni ${kaomoji} server`)
-    : args.next();
+const initApp = (args) => {
+    console.log('args.req ----->', args.req);
+    return !(0, exports.corsCheck)(args.req.headers.origin)
+        ? args.next() // args.res.status(403).send(`uni ${kaomoji} server`)
+        : args.next();
+};
 exports.initApp = initApp;
 // ------ Server:
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {

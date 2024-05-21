@@ -30,10 +30,12 @@ export const corsCheck = (origin: string) =>
 
 // ------ App (Express):
 
-export const initApp = (args: gt.ReqArgs) =>
-  !corsCheck(args.req.headers.origin!)
-    ? args.res.status(403).send(`uni ${kaomoji} server`)
+export const initApp = (args: gt.ReqArgs) => {
+  console.log('args.req ----->', args.req);
+  return !corsCheck(args.req.headers.origin!)
+    ? args.next() // args.res.status(403).send(`uni ${kaomoji} server`)
     : args.next();
+};
 
 // ------ Server:
 
