@@ -32,10 +32,7 @@ const spotEnum = __importStar(require("../projects/spotAction/enum"));
 const models_1 = __importDefault(require("./models"));
 require('dotenv').config();
 const { Project } = spotEnum;
-mongoose_1.default.connect(process.env.MONGO_DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+mongoose_1.default.connect(process.env.MONGO_DB, {});
 const getModel = (label) => {
     switch (label) {
         case Project.SPOT_ACTION:

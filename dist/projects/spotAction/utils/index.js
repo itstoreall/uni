@@ -82,13 +82,14 @@ exports.fetchPrices = fetchPrices;
 const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log('prices:', prices);
     const actions = yield (0, exports.getAllActions)();
+    let actionCount = 0;
     const priceMap = {
         [Symbol.BTC]: prices[Token.BITCOIN].usd,
         [Symbol.ETH]: prices[Token.ETHEREUM].usd,
         [Symbol.LTC]: prices[Token.LITECOIN].usd,
-        [Symbol.AVAX]: prices[Token.AVALANCHE].usd
+        [Symbol.AVAX]: prices[Token.AVALANCHE].usd,
+        [Symbol.SOL]: prices[Token.SOLANA].usd
     };
-    let count = 0;
     for (const action of actions) {
         const newPrice = priceMap[action.token];
         if (newPrice) {
@@ -97,10 +98,10 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
             action.updatedAt = (0, getIntlDate_1.getIntlDate)();
             const updatedAction = yield action.save();
             if (updatedAction.token === action.token)
-                count += 1;
+                actionCount += 1;
         }
     }
-    return count === actions.length;
+    return actionCount === actions.length;
 });
 exports.updatePrices = updatePrices;
 // ------ Actions:
@@ -128,7 +129,8 @@ const createAction = () => __awaiter(void 0, void 0, void 0, function* () {
         current_price: 15.5,
         prices: [10, 21],
         percent: 8,
-        status: Status.INVESTED
+        status: Status.INVESTED,
+        updatedAt: (0, getIntlDate_1.getIntlDate)()
     };
     const params = { model: SpotActionModel, input: actionInput };
     return yield service_1.default.create(params);
