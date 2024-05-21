@@ -15,9 +15,7 @@ const { cacheKey } = cache;
 export const cronFn = async () => {
   const prices = await fetchPrices();
   const isUpdated = await updatePrices(prices);
-
   if (!isUpdated) return;
-
   console.log('updated ====>', isUpdated);
 
   /*
@@ -52,15 +50,15 @@ export const updatePrices = async (prices: CurrentPrices) => {
   // console.log('prices:', prices);
 
   const actions = await getAllActions();
+  let actionCount: number = 0;
 
   const priceMap = {
     [Symbol.BTC]: prices[Token.BITCOIN].usd,
     [Symbol.ETH]: prices[Token.ETHEREUM].usd,
     [Symbol.LTC]: prices[Token.LITECOIN].usd,
-    [Symbol.AVAX]: prices[Token.AVALANCHE].usd
+    [Symbol.AVAX]: prices[Token.AVALANCHE].usd,
+    [Symbol.SOL]: prices[Token.SOLANA].usd
   };
-
-  let count = 0;
 
   for (const action of actions) {
     const newPrice = priceMap[action.token as keyof typeof priceMap];
@@ -72,11 +70,11 @@ export const updatePrices = async (prices: CurrentPrices) => {
 
       const updatedAction = await action.save();
 
-      if (updatedAction.token === action.token) count += 1;
+      if (updatedAction.token === action.token) actionCount += 1;
     }
   }
 
-  return count === actions.length;
+  return actionCount === actions.length;
 };
 
 // ------ Actions:
@@ -105,7 +103,8 @@ export const createAction = async () => {
     current_price: 15.5,
     prices: [10, 21],
     percent: 8,
-    status: Status.INVESTED
+    status: Status.INVESTED,
+    updatedAt: getIntlDate()
   };
   const params = { model: SpotActionModel, input: actionInput };
   return await service.create(params);

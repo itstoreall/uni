@@ -36,7 +36,7 @@ const makeRequest = (cb) => __awaiter(void 0, void 0, void 0, function* () {
         return yield cb();
     }
     catch (e) {
-        throw new Error('((((((');
+        console.error(`ERROR in makeRequest: ${e.message}`);
     }
 });
 exports.default = {

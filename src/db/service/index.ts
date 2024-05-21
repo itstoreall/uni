@@ -47,7 +47,7 @@ const makeRequest: MakeRequest = async cb => {
   try {
     return await cb();
   } catch (e) {
-    throw new Error('((((((');
+    console.error(`ERROR in makeRequest: ${e.message}`);
   }
 };
 

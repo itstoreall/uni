@@ -5,10 +5,7 @@ require('dotenv').config();
 
 const { Project } = spotEnum;
 
-mongoose.connect(process.env.MONGO_DB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-} as ConnectOptions);
+mongoose.connect(process.env.MONGO_DB, {} as ConnectOptions);
 
 export const getModel = (label: string) => {
   switch (label) {
