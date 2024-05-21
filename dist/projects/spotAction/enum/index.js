@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Status = exports.Action = exports.Token = exports.Project = void 0;
+exports.Status = exports.Action = exports.Symbol = exports.Token = exports.Project = void 0;
 var Project;
 (function (Project) {
     Project["SPOT_ACTION"] = "spot_action";
@@ -14,6 +14,15 @@ var Token;
     Token["SOLANA"] = "solana";
     Token["NEAR"] = "near";
 })(Token || (exports.Token = Token = {}));
+var Symbol;
+(function (Symbol) {
+    Symbol["BTC"] = "btc";
+    Symbol["ETH"] = "eth";
+    Symbol["LTC"] = "ltc";
+    Symbol["AVAX"] = "avax";
+    Symbol["SOL"] = "sol";
+    Symbol["NEAR"] = "near";
+})(Symbol || (exports.Symbol = Symbol = {}));
 var Action;
 (function (Action) {
     Action["BUY"] = "buy";
