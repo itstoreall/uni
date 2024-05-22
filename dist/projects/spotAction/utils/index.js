@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeAction = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.updatePrices = exports.fetchPrices = exports.cronFn = void 0;
+exports.removeAction = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.updatePrices = exports.fetchPrices = exports.updateActions = void 0;
 const getIntlDate_1 = require("../../../utils/getIntlDate");
 const service_1 = __importDefault(require("../../../db/service"));
 const db_1 = require("../../../db");
@@ -43,32 +43,34 @@ const db_1 = require("../../../db");
 const projEnum = __importStar(require("../enum"));
 const cache = __importStar(require("../cache"));
 const api = __importStar(require("../api"));
+const { cacheKey } = cache;
+const pricesKey = cacheKey.spotActionPrices;
 const { Project, Action, Status, Token, Symbol } = projEnum;
 const { SPOT_ACTION } = Project;
 const SpotActionModel = (0, db_1.getModel)(SPOT_ACTION);
-const { cacheKey } = cache;
-const cronFn = () => __awaiter(void 0, void 0, void 0, function* () {
+const updateActions = () => __awaiter(void 0, void 0, void 0, function* () {
     const prices = yield (0, exports.fetchPrices)();
-    const isUpdated = yield (0, exports.updatePrices)(prices);
-    if (!isUpdated)
-        return;
+    /*
+    const isUpdated = await updatePrices(prices);
+    if (!isUpdated) return;
     console.log('updated ====>', isUpdated);
+    // */
     /*
     const actions = await getAllActions();
     const actions = await getByStatus();
     const actionID = (await existsByID())._id;
-    const newAction = await createAction();
     const isRemoved = await removeAction();
     */
+    const newAction = yield (0, exports.createAction)();
+    console.log('newAction:', newAction);
 });
-exports.cronFn = cronFn;
+exports.updateActions = updateActions;
 // ------ Prices:
 const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
-    const pricesKey = cacheKey.spotActionPrices;
     /* ------ Cache:
     const cachedPrices = cache.getCache(pricesKey); // *
     console.log('cachedPrices:', cachedPrices); // *
-    */
+    // */
     try {
         const prices = yield api.getPrices();
         cache.setCache(pricesKey, prices);
@@ -80,9 +82,7 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.fetchPrices = fetchPrices;
 const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log('prices:', prices);
     const actions = yield (0, exports.getAllActions)();
-    let actionCount = 0;
     const priceMap = {
         [Symbol.BTC]: prices[Token.BITCOIN].usd,
         [Symbol.ETH]: prices[Token.ETHEREUM].usd,
@@ -90,11 +90,21 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
         [Symbol.AVAX]: prices[Token.AVALANCHE].usd,
         [Symbol.SOL]: prices[Token.SOLANA].usd
     };
+    let actionCount = 0;
+    const calculatePercentage = (action, price) => {
+        const rawPercent = action.average_price
+            ? (price / action.average_price) * 100
+            : 0;
+        const fixedValue = rawPercent.toFixed();
+        const numberValue = Number(fixedValue);
+        return typeof numberValue === 'number' ? numberValue : 0;
+    };
     for (const action of actions) {
         const newPrice = priceMap[action.token];
         if (newPrice) {
+            const currentPrice = priceMap[action.token];
             action.current_price = newPrice;
-            action.percent = 7;
+            action.percent = calculatePercentage(action, currentPrice);
             action.updatedAt = (0, getIntlDate_1.getIntlDate)();
             const updatedAction = yield action.save();
             if (updatedAction.token === action.token)
@@ -121,19 +131,30 @@ const existsByID = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.existsByID = existsByID;
 const createAction = () => __awaiter(void 0, void 0, void 0, function* () {
+    const actions = yield (0, exports.getAllActions)();
+    console.log('actions', actions);
+    const prices = cache.getCache(pricesKey); // *
+    // console.log('cachedPrices:', prices[Token.BITCOIN].usd); // *
+    const id = actions.length ? actions[actions.length - 1].tokenId : 0;
+    // console.log('id', id);
+    // const tokenId = id ? (id === actions.length ? id + 1 : 1) : 1;
+    // console.log('tokenId', tokenId);
+    // const tokenId = isLength;
+    // console.log('isActions', isLength);
     const actionInput = {
-        tokenId: 5,
-        token: 'sol',
-        action: Action.BUY,
-        average_price: 15.5,
-        current_price: 15.5,
-        prices: [10, 21],
-        percent: 8,
-        status: Status.INVESTED,
+        tokenId: id + 1,
+        token: Symbol.SOL,
+        action: Action.INIT,
+        average_price: 0, // target
+        current_price: prices[Token.SOLANA].usd,
+        prices: [0], // target
+        percent: 0,
+        status: Status.INIT,
         updatedAt: (0, getIntlDate_1.getIntlDate)()
     };
     const params = { model: SpotActionModel, input: actionInput };
-    return yield service_1.default.create(params);
+    // return await service.create(params);
+    return 0;
 });
 exports.createAction = createAction;
 const removeAction = () => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,44 +1,48 @@
 import { getIntlDate } from '../../../utils/getIntlDate';
 import service from '../../../db/service';
 import { getModel } from '../../../db';
-import { CurrentPrices } from '../types';
 // import * as gu from '../../../utils/global';
 import * as projEnum from '../enum';
 import * as cache from '../cache';
 import * as api from '../api';
+import * as t from '../types';
 
+const { cacheKey } = cache;
+const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
 const { Project, Action, Status, Token, Symbol } = projEnum;
 const { SPOT_ACTION } = Project;
 const SpotActionModel = getModel(SPOT_ACTION);
-const { cacheKey } = cache;
 
-export const cronFn = async () => {
+export const updateActions = async () => {
   const prices = await fetchPrices();
+
+  /*
   const isUpdated = await updatePrices(prices);
   if (!isUpdated) return;
   console.log('updated ====>', isUpdated);
+  // */
 
   /*
   const actions = await getAllActions();
   const actions = await getByStatus();
   const actionID = (await existsByID())._id;
-  const newAction = await createAction();
   const isRemoved = await removeAction();
   */
+
+  const newAction = await createAction();
+  console.log('newAction:', newAction);
 };
 
 // ------ Prices:
 
 export const fetchPrices = async () => {
-  const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
-
   /* ------ Cache:
   const cachedPrices = cache.getCache(pricesKey); // *
   console.log('cachedPrices:', cachedPrices); // *
-  */
+  // */
 
   try {
-    const prices: CurrentPrices = await api.getPrices();
+    const prices: t.CurrentPrices = await api.getPrices();
     cache.setCache(pricesKey, prices);
     return prices;
   } catch (e) {
@@ -46,11 +50,8 @@ export const fetchPrices = async () => {
   }
 };
 
-export const updatePrices = async (prices: CurrentPrices) => {
-  // console.log('prices:', prices);
-
+export const updatePrices = async (prices: t.CurrentPrices) => {
   const actions = await getAllActions();
-  let actionCount: number = 0;
 
   const priceMap = {
     [Symbol.BTC]: prices[Token.BITCOIN].usd,
@@ -60,12 +61,26 @@ export const updatePrices = async (prices: CurrentPrices) => {
     [Symbol.SOL]: prices[Token.SOLANA].usd
   };
 
+  let actionCount: number = 0;
+
+  const calculatePercentage = (action: t.SpotAction, price: number) => {
+    const rawPercent = action.average_price
+      ? (price / action.average_price) * 100
+      : 0;
+
+    const fixedValue = rawPercent.toFixed();
+    const numberValue = Number(fixedValue);
+    return typeof numberValue === 'number' ? numberValue : 0;
+  };
+
   for (const action of actions) {
     const newPrice = priceMap[action.token as keyof typeof priceMap];
 
     if (newPrice) {
+      const currentPrice = priceMap[action.token as keyof typeof priceMap];
+
       action.current_price = newPrice;
-      action.percent = 7;
+      action.percent = calculatePercentage(action, currentPrice);
       action.updatedAt = getIntlDate();
 
       const updatedAction = await action.save();
@@ -95,19 +110,39 @@ export const existsByID = async () => {
 };
 
 export const createAction = async () => {
+  const actions = await getAllActions();
+  console.log('actions', actions);
+
+  const prices = cache.getCache(pricesKey) as t.CurrentPrices; // *
+  // console.log('cachedPrices:', prices[Token.BITCOIN].usd); // *
+
+  const id = actions.length ? actions[actions.length - 1].tokenId : 0;
+
+  // console.log('id', id);
+
+  // const tokenId = id ? (id === actions.length ? id + 1 : 1) : 1;
+
+  // console.log('tokenId', tokenId);
+
+  // const tokenId = isLength;
+
+  // console.log('isActions', isLength);
+
   const actionInput = {
-    tokenId: 5,
-    token: 'sol',
-    action: Action.BUY,
-    average_price: 15.5,
-    current_price: 15.5,
-    prices: [10, 21],
-    percent: 8,
-    status: Status.INVESTED,
+    tokenId: id + 1,
+    token: Symbol.SOL,
+    action: Action.INIT,
+    average_price: 0, // target
+    current_price: prices[Token.SOLANA].usd,
+    prices: [0], // target
+    percent: 0,
+    status: Status.INIT,
     updatedAt: getIntlDate()
   };
+
   const params = { model: SpotActionModel, input: actionInput };
-  return await service.create(params);
+  // return await service.create(params);
+  return 0;
 };
 
 export const removeAction = async () => {

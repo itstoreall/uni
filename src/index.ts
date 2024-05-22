@@ -1,6 +1,7 @@
 import { ApolloServer } from 'apollo-server-express';
 import ex from 'express';
 import { createServer } from 'http';
+import starter from './utils/starter';
 import * as gt from './types/global';
 import * as gu from './utils/global';
 import gGql from './graphQL/global';
@@ -16,7 +17,7 @@ const server: gt.HttpServer = createServer(app);
 const apollo = new ApolloServer({ ...gGql });
 
 apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
-server.listen({ port }, () => gu.starter(String(port)));
+server.listen({ port }, () => starter(String(port)));
 
 app.use((e: Error, _: ex.Request, res: ex.Response, __: ex.NextFunction) => {
   const msg = e.message || 'Internal Server Error';
