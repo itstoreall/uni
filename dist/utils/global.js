@@ -22,59 +22,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.starter = exports.initApp = exports.corsCheck = exports.dbCheck = exports.isLocal = void 0;
+exports.initApp = exports.corsCheck = exports.isLocal = void 0;
 const os_1 = __importDefault(require("os"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const spotActionUtils = __importStar(require("../projects/spotAction/utils"));
 const gc = __importStar(require("../config/global"));
-const cron_1 = __importDefault(require("../utils/cron"));
-require('dotenv').config();
 const corsOrigin = process.env.CORS_ORIGIN;
-const { kaomoji, host } = gc.system;
-const dev = `${kaomoji} http://${host.local}`;
-const prod = `http://${os_1.default.hostname()}`;
-const min = '*/10 * * * *'; // *
+const { kaomoji } = gc.system;
 // ------ is:
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
 exports.isLocal = isLocal;
-// ------ db:
-const dbCheck = (mongoose) => {
-    const isConnected = mongoose.connection.readyState === 2;
-    return { isConnected, db: isConnected ? 'mongodb' : 'no db' };
-};
-exports.dbCheck = dbCheck;
 // ------ cors:
 const corsCheck = (origin) => corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(origin);
 exports.corsCheck = corsCheck;
 // ------ App (Express):
 const initApp = (args) => {
-    console.log('args.req ----->', args.req);
     return !(0, exports.corsCheck)(args.req.headers.origin)
-        ? args.next() // args.res.status(403).send(`uni ${kaomoji} server`)
+        ? args.res.status(403).send(`uni ${kaomoji} server`)
         : args.next();
 };
 exports.initApp = initApp;
-// ------ Server:
-const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
-    spotActionUtils.cronFn();
-    (0, cron_1.default)(min, spotActionUtils.cronFn);
-    const dbName = (0, exports.dbCheck)(mongoose_1.default).db;
-    console.log('');
-    console.log(`  uni ${(0, exports.isLocal)() ? dev : prod}:${port} -> ${dbName} `);
-    console.log('');
-});
-exports.starter = starter;
 //# sourceMappingURL=global.js.map

@@ -25,11 +25,13 @@ var Symbol;
 })(Symbol || (exports.Symbol = Symbol = {}));
 var Action;
 (function (Action) {
+    Action["INIT"] = "init";
     Action["BUY"] = "buy";
     Action["SELL"] = "sell";
 })(Action || (exports.Action = Action = {}));
 var Status;
 (function (Status) {
+    Status["INIT"] = "init";
     Status["INVESTED"] = "invested";
     Status["WITHDRAWN"] = "withdrawn";
 })(Status || (exports.Status = Status = {}));

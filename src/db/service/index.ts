@@ -35,8 +35,8 @@ const create = async ({ model, input }: CreateArgs) => {
   return await makeRequest(() => model.create(input));
 };
 
-const updateByID = async ({ model, id, input }: UpdateArgs) => {
-  return await makeRequest(() => model.create({ _id: id }, { ...input }));
+const updateByID = async ({ model, id: _id, input }: UpdateArgs) => {
+  return await makeRequest(() => model.updateOne({ _id }, { ...input }));
 };
 
 const removeByID = async ({ model, id }: IDArgs) => {

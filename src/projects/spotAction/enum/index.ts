@@ -21,11 +21,13 @@ export enum Symbol {
 }
 
 export enum Action {
+  INIT = 'init',
   BUY = 'buy',
   SELL = 'sell'
 }
 
 export enum Status {
+  INIT = 'init',
   INVESTED = 'invested',
   WITHDRAWN = 'withdrawn'
 }

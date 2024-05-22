@@ -29,6 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const apollo_server_express_1 = require("apollo-server-express");
 const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
+const starter_1 = __importDefault(require("./utils/starter"));
 const gu = __importStar(require("./utils/global"));
 const global_1 = __importDefault(require("./graphQL/global"));
 const routes_1 = __importDefault(require("./routes"));
@@ -39,7 +40,7 @@ app.use('/api', (_, __, next) => next(0), routes_1.default);
 const server = (0, http_1.createServer)(app);
 const apollo = new apollo_server_express_1.ApolloServer(Object.assign({}, global_1.default));
 apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
-server.listen({ port }, () => gu.starter(String(port)));
+server.listen({ port }, () => (0, starter_1.default)(String(port)));
 app.use((e, _, res, __) => {
     const msg = e.message || 'Internal Server Error';
     return res.status(500).json({ error: msg });
