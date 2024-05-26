@@ -23,6 +23,7 @@ const makeRequest = (config) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const axiosConfig = Object.assign({}, config);
         const response = yield (0, axios_1.default)(axiosConfig);
+        // console.log('makeRequest data:', response.data); // *
         return response === null || response === void 0 ? void 0 : response.data;
     }
     catch (e) {

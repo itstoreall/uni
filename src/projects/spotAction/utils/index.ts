@@ -10,11 +10,11 @@ import * as t from '../types';
 const { cacheKey } = cache;
 const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
 const { Project, Action, Status, Token, Symbol } = projEnum;
-const { SPOT_ACTION } = Project;
-const SpotActionModel = getModel(SPOT_ACTION);
+const SpotActionModel = getModel(Project.SPOT_ACTION);
 
 export const updateActions = async () => {
   const prices = await fetchPrices();
+  console.log('prices ---->', prices);
 
   /*
   const isUpdated = await updatePrices(prices);
@@ -29,8 +29,13 @@ export const updateActions = async () => {
   const isRemoved = await removeAction();
   */
 
-  const newAction = await createAction();
+  // /*
+  const newAction = await createAction({
+    token: Token.IOTA,
+    symbol: Symbol.IOTA
+  });
   console.log('newAction:', newAction);
+  // */
 };
 
 // ------ Prices:
@@ -54,11 +59,100 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
   const actions = await getAllActions();
 
   const priceMap = {
-    [Symbol.BTC]: prices[Token.BITCOIN].usd,
-    [Symbol.ETH]: prices[Token.ETHEREUM].usd,
-    [Symbol.LTC]: prices[Token.LITECOIN].usd,
-    [Symbol.AVAX]: prices[Token.AVALANCHE].usd,
-    [Symbol.SOL]: prices[Token.SOLANA].usd
+    [Symbol.BTC]: prices[Token.BITCOIN]?.usd,
+    [Symbol.ETH]: prices[Token.ETHEREUM]?.usd,
+    [Symbol.LTC]: prices[Token.LITECOIN]?.usd,
+    [Symbol.AVAX]: prices[Token.AVALANCHE]?.usd,
+    [Symbol.SOL]: prices[Token.SOLANA]?.usd,
+    [Symbol.NEAR]: prices[Token.NEAR]?.usd,
+    [Symbol.ARB]: prices[Token.ARBITRUM]?.usd,
+    [Symbol.ATOM]: prices[Token.COSMOS]?.usd,
+    [Symbol.APT]: prices[Token.APTOS]?.usd,
+    [Symbol.LINK]: prices[Token.CHAINLINK]?.usd,
+    // 10
+    [Symbol.DOT]: prices[Token.POLKADOT]?.usd,
+    [Symbol.INJ]: prices[Token.INJECTIVE]?.usd,
+    [Symbol.ALGO]: prices[Token.ALGORAND]?.usd,
+    [Symbol.GRT]: prices[Token.GRAPH]?.usd,
+    [Symbol.FIL]: prices[Token.FILECOIN]?.usd,
+    [Symbol.STRK]: prices[Token.STARKNET]?.usd,
+    [Symbol.MATIC]: prices[Token.POLYGON]?.usd,
+    [Symbol.EGLD]: prices[Token.MULTIVERSX]?.usd,
+    [Symbol.HBAR]: prices[Token.HEDERA]?.usd,
+    [Symbol.OSMO]: prices[Token.OSMOSIS]?.usd,
+    // 20
+    [Symbol.MINA]: prices[Token.MINA]?.usd,
+    [Symbol.AXS]: prices[Token.AXIE]?.usd,
+    [Symbol.TWT]: prices[Token.TRUSTWALLET]?.usd,
+    [Symbol.DOGE]: prices[Token.DOGECOIN]?.usd,
+    [Symbol.UNI]: prices[Token.UNISWAP]?.usd,
+    [Symbol.GMX]: prices[Token.GMX]?.usd,
+    [Symbol.FLOW]: prices[Token.FLOW]?.usd,
+    [Symbol.RON]: prices[Token.RONIN]?.usd,
+    [Symbol.JASMY]: prices[Token.JASMY]?.usd,
+    [Symbol.ADA]: prices[Token.CARDANO]?.usd,
+    // 30
+    [Symbol.ETC]: prices[Token.ETHEREUM_CLASSIC]?.usd,
+    [Symbol.SHIBA]: prices[Token.SHIBA]?.usd,
+    [Symbol.SUSHI]: prices[Token.SUSHI]?.usd,
+    [Symbol.BOME]: prices[Token.BOOK_OF_MEME]?.usd,
+    [Symbol.SAND]: prices[Token.SAND]?.usd,
+    [Symbol.RAY]: prices[Token.RAYDIUM]?.usd,
+    [Symbol.XRP]: prices[Token.RIPPLE]?.usd,
+    [Symbol.SUI]: prices[Token.SUI]?.usd,
+    [Symbol.CETUS]: prices[Token.CETUS_PROTOCOL]?.usd,
+    [Symbol.BAND]: prices[Token.BAND_PROTOCOL]?.usd,
+    // 40
+    [Symbol.ATA]: prices[Token.AUTOMATA]?.usd,
+    [Symbol.MBOX]: prices[Token.MOBOX]?.usd,
+    [Symbol.AAVE]: prices[Token.AAVE]?.usd,
+    [Symbol.APE]: prices[Token.APE_COIN]?.usd,
+    [Symbol.THETA]: prices[Token.THETA]?.usd,
+    [Symbol.COMP]: prices[Token.COMPOUND_GOVERNANCE]?.usd,
+    [Symbol.SNX]: prices[Token.SYNTHETIX_NETWORK]?.usd,
+    [Symbol.CAKE]: prices[Token.PANCAKE_SWAP]?.usd,
+    [Symbol.DIA]: prices[Token.DIA]?.usd,
+    [Symbol.ONE_INCH]: prices[Token.ONE_INCH]?.usd,
+    // 50
+    [Symbol.MANTA]: prices[Token.MANTA_NETWORK]?.usd,
+    [Symbol.REEF]: prices[Token.REEF]?.usd,
+    [Symbol.NEO]: prices[Token.NEO]?.usd,
+    [Symbol.CKB]: prices[Token.NERVOS_NETWORK]?.usd,
+    [Symbol.KSM]: prices[Token.KUSAMA]?.usd,
+    [Symbol.XLM]: prices[Token.STELLAR]?.usd,
+    [Symbol.RDNT]: prices[Token.RADIANT_CAPITAL]?.usd,
+    [Symbol.YFI]: prices[Token.YEARN_FINANCE]?.usd,
+    [Symbol.ICP]: prices[Token.INTERNET_COMPUTER]?.usd,
+    [Symbol.W]: prices[Token.WORMHOLE]?.usd,
+    // 60
+    [Symbol.TLM]: prices[Token.ALIEN_WORLDS]?.usd,
+    [Symbol.JUP]: prices[Token.JUPITER]?.usd,
+    [Symbol.SFP]: prices[Token.SAFEPAL]?.usd,
+    [Symbol.ONT]: prices[Token.ONTOLOGY]?.usd,
+    [Symbol.XVG]: prices[Token.VERGE]?.usd,
+    [Symbol.BSW]: prices[Token.BISWAP]?.usd,
+    [Symbol.KAVA]: prices[Token.KAVA]?.usd,
+    [Symbol.ALICE]: prices[Token.MY_NEIGHBOR_ALICE]?.usd,
+    [Symbol.VANRY]: prices[Token.VANAR_CHAIN]?.usd,
+    [Symbol.DAR]: prices[Token.MINES_OF_DALARNIA]?.usd,
+    // 70
+    [Symbol.TFUEL]: prices[Token.THETA_FUEL]?.usd,
+    [Symbol.ASTR]: prices[Token.ASTAR]?.usd,
+    [Symbol.DODO]: prices[Token.DODO]?.usd,
+    [Symbol.XCH]: prices[Token.CHIA]?.usd,
+    [Symbol.LINA]: prices[Token.LINEAR]?.usd,
+    [Symbol.LIT]: prices[Token.LITENTRY]?.usd,
+    [Symbol.GLMR]: prices[Token.MOONBEAM]?.usd,
+    [Symbol.RVN]: prices[Token.RAVENCOIN]?.usd,
+    [Symbol.CELO]: prices[Token.CELO]?.usd,
+    [Symbol.ANKR]: prices[Token.ANKR]?.usd,
+    // 80
+    [Symbol.ROSE]: prices[Token.OASIS_NETWORK]?.usd,
+    [Symbol.MANA]: prices[Token.DECENTRALAND]?.usd,
+    [Symbol.ZIL]: prices[Token.ZILLIQA]?.usd,
+    [Symbol.EOS]: prices[Token.EOS]?.usd,
+    [Symbol.EVMOS]: prices[Token.EVMOS]?.usd,
+    [Symbol.IOTA]: prices[Token.IOTA]?.usd
   };
 
   let actionCount: number = 0;
@@ -83,9 +177,10 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
       action.percent = calculatePercentage(action, currentPrice);
       action.updatedAt = getIntlDate();
 
+      /*
       const updatedAction = await action.save();
-
       if (updatedAction.token === action.token) actionCount += 1;
+      // */
     }
   }
 
@@ -109,31 +204,25 @@ export const existsByID = async () => {
   return await service.existsByID(params);
 };
 
-export const createAction = async () => {
+type CreateActionArgs = { token: any; symbol: any };
+
+export const createAction = async (args: CreateActionArgs) => {
   const actions = await getAllActions();
-  console.log('actions', actions);
-
-  const prices = cache.getCache(pricesKey) as t.CurrentPrices; // *
-  // console.log('cachedPrices:', prices[Token.BITCOIN].usd); // *
-
+  const prices = cache.getCache(pricesKey) as t.CurrentPrices;
   const id = actions.length ? actions[actions.length - 1].tokenId : 0;
+  const price = prices[Token.IOTA];
+  const token = Symbol.IOTA;
+  // const price = prices[args.token];
+  // const token = Symbol.IOTA;
 
-  // console.log('id', id);
-
-  // const tokenId = id ? (id === actions.length ? id + 1 : 1) : 1;
-
-  // console.log('tokenId', tokenId);
-
-  // const tokenId = isLength;
-
-  // console.log('isActions', isLength);
+  // TODO:
 
   const actionInput = {
     tokenId: id + 1,
-    token: Symbol.SOL,
+    token: token,
     action: Action.INIT,
     average_price: 0, // target
-    current_price: prices[Token.SOLANA].usd,
+    current_price: price ? price.usd : 0,
     prices: [0], // target
     percent: 0,
     status: Status.INIT,
@@ -141,7 +230,7 @@ export const createAction = async () => {
   };
 
   const params = { model: SpotActionModel, input: actionInput };
-  // return await service.create(params);
+  return await service.create(params);
   return 0;
 };
 

@@ -15,7 +15,6 @@ const resolvers = {
     },
 
     getActionByID: async (_: any, args: { id: any }) => {
-      console.log(2);
       const params = { model: ActionModel, id: args.id };
       return await service.getByID(params);
     },

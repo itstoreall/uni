@@ -48,7 +48,6 @@ const resolvers = {
             return (yield service_1.default.getAll(params));
         }),
         getActionByID: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(2);
             const params = { model: ActionModel, id: args.id };
             return yield service_1.default.getByID(params);
         }),
