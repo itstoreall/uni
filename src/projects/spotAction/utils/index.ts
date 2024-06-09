@@ -6,15 +6,17 @@ import * as projEnum from '../enum';
 import * as cache from '../cache';
 import * as api from '../api';
 import * as t from '../types';
+import w from '../../../winston';
 
 const { cacheKey } = cache;
 const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
+const timestampKey = cacheKey.spotActionPriceTimestamp as cache.CacheKey;
 const { Project, Action, Status, Token, Symbol } = projEnum;
 const SpotActionModel = getModel(Project.SPOT_ACTION);
 
 export const updateActions = async () => {
-  const prices = await fetchPrices();
-  console.log('prices ---->', prices);
+  w.fn('updateActions');
+  const isUpdated = await fetchPrices();
 
   /*
   const isUpdated = await updatePrices(prices);
@@ -29,27 +31,39 @@ export const updateActions = async () => {
   const isRemoved = await removeAction();
   */
 
-  // /*
+  /*
   const newAction = await createAction({
     token: Token.IOTA,
     symbol: Symbol.IOTA
   });
   console.log('newAction:', newAction);
   // */
+
+  return isUpdated;
 };
 
 // ------ Prices:
 
 export const fetchPrices = async () => {
-  /* ------ Cache:
-  const cachedPrices = cache.getCache(pricesKey); // *
-  console.log('cachedPrices:', cachedPrices); // *
-  // */
+  w.fn('fetchPrices');
+
+  const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
+  const cachedTimestamp = cache.getCache(timestampKey) as number;
+
+  const FIVE_MINUTES = 5 * 60 * 1000;
+
+  if (cachedPrices && cachedTimestamp) {
+    const currentTime = Date.now();
+    const timeElapsed = currentTime - cachedTimestamp;
+    if (timeElapsed < FIVE_MINUTES) return false;
+  }
 
   try {
     const prices: t.CurrentPrices = await api.getPrices();
+    const currentTime = Date.now();
     cache.setCache(pricesKey, prices);
-    return prices;
+    cache.setCache(timestampKey, currentTime);
+    return true;
   } catch (e) {
     console.error('ERROR in fetchPrices:', e);
   }

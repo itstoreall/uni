@@ -1,8 +1,10 @@
 // import * as ge from '../enum/global';
 import service from '../../../db/service';
-import * as spotEnum from '../enum';
 import { getModel } from '../../../db';
+import * as spotEnum from '../enum';
 import * as t from '../types';
+import * as u from '../utils';
+import w from '../../../winston';
 
 const { Project } = spotEnum;
 const ActionModel = getModel(Project.SPOT_ACTION);
@@ -10,11 +12,16 @@ const ActionModel = getModel(Project.SPOT_ACTION);
 const resolvers = {
   Query: {
     getActions: async () => {
-      const params = { model: ActionModel };
-      return (await service.getAll(params)) as t.SpotAction[];
+      w.fn('getActions');
+      const isUpdated = await u.updateActions();
+      const actions = await u.getAllActions();
+      w.info(`updated: ${isUpdated} ${actions?.length}`);
+      w.fn(`updated: ${isUpdated} ${actions?.length}`);
+      w.err(`updated: ${isUpdated} ${actions?.length}`);
+      return { isUpdated, actions };
     },
 
-    getActionByID: async (_: any, args: { id: any }) => {
+    getActionByID: async (_: any, args: { id: string }) => {
       const params = { model: ActionModel, id: args.id };
       return await service.getByID(params);
     },

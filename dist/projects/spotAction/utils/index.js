@@ -43,13 +43,15 @@ const db_1 = require("../../../db");
 const projEnum = __importStar(require("../enum"));
 const cache = __importStar(require("../cache"));
 const api = __importStar(require("../api"));
+const winston_1 = __importDefault(require("../../../winston"));
 const { cacheKey } = cache;
 const pricesKey = cacheKey.spotActionPrices;
+const timestampKey = cacheKey.spotActionPriceTimestamp;
 const { Project, Action, Status, Token, Symbol } = projEnum;
 const SpotActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
 const updateActions = () => __awaiter(void 0, void 0, void 0, function* () {
-    const prices = yield (0, exports.fetchPrices)();
-    console.log('prices ---->', prices);
+    winston_1.default.fn('updateActions');
+    const isUpdated = yield (0, exports.fetchPrices)();
     /*
     const isUpdated = await updatePrices(prices);
     if (!isUpdated) return;
@@ -61,25 +63,34 @@ const updateActions = () => __awaiter(void 0, void 0, void 0, function* () {
     const actionID = (await existsByID())._id;
     const isRemoved = await removeAction();
     */
-    // /*
-    const newAction = yield (0, exports.createAction)({
-        token: Token.IOTA,
-        symbol: Symbol.IOTA
+    /*
+    const newAction = await createAction({
+      token: Token.IOTA,
+      symbol: Symbol.IOTA
     });
     console.log('newAction:', newAction);
     // */
+    return isUpdated;
 });
 exports.updateActions = updateActions;
 // ------ Prices:
 const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
-    /* ------ Cache:
+    winston_1.default.fn('fetchPrices');
     const cachedPrices = cache.getCache(pricesKey); // *
-    console.log('cachedPrices:', cachedPrices); // *
-    // */
+    const cachedTimestamp = cache.getCache(timestampKey);
+    const FIVE_MINUTES = 5 * 60 * 1000;
+    if (cachedPrices && cachedTimestamp) {
+        const currentTime = Date.now();
+        const timeElapsed = currentTime - cachedTimestamp;
+        if (timeElapsed < FIVE_MINUTES)
+            return false;
+    }
     try {
         const prices = yield api.getPrices();
+        const currentTime = Date.now();
         cache.setCache(pricesKey, prices);
-        return prices;
+        cache.setCache(timestampKey, currentTime);
+        return true;
     }
     catch (e) {
         console.error('ERROR in fetchPrices:', e);
