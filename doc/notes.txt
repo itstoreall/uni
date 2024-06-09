@@ -1,0 +1,8 @@
+------ Add token (projects/spotAction/):
+
+1. Add token to enum: Token and Symbol (enum)
+2. Add new token using an actionInput (utils/index.ts/createAction)
+3. Add new token to the priceMap (utils/index.ts/updatePrice)
+4. Add new token to the mock object (api/index.ts/getPrices)
+
+------ 

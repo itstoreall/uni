@@ -37,18 +37,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // import * as ge from '../enum/global';
 const service_1 = __importDefault(require("../../../db/service"));
-const spotEnum = __importStar(require("../enum"));
 const db_1 = require("../../../db");
+const spotEnum = __importStar(require("../enum"));
+const u = __importStar(require("../utils"));
+const winston_1 = __importDefault(require("../../../winston"));
 const { Project } = spotEnum;
 const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
 const resolvers = {
     Query: {
         getActions: () => __awaiter(void 0, void 0, void 0, function* () {
-            const params = { model: ActionModel };
-            return (yield service_1.default.getAll(params));
+            winston_1.default.fn('getActions');
+            const isUpdated = yield u.updateActions();
+            const actions = yield u.getAllActions();
+            winston_1.default.info(`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
+            winston_1.default.fn(`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
+            winston_1.default.err(`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
+            return { isUpdated, actions };
         }),
         getActionByID: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(2);
             const params = { model: ActionModel, id: args.id };
             return yield service_1.default.getByID(params);
         }),

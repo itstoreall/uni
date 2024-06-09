@@ -50,6 +50,7 @@ const dbCheck = (mongoose) => {
 };
 // ------ Server:
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('* starter');
     spotActionUtils.updateActions();
     const dbName = dbCheck(mongoose_1.default).db;
     console.log('');

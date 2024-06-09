@@ -19,6 +19,7 @@ const dbCheck = (mongoose: any) => {
 // ------ Server:
 
 const starter: gt.RunServer = async port => {
+  console.log('* starter');
   spotActionUtils.updateActions();
   const dbName = dbCheck(mongoose).db;
   console.log('');

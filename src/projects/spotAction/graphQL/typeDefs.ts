@@ -1,33 +1,36 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-
-  """
-  Enums
-  """
   enum EAction {
+    init
     buy
     sell
   }
 
   enum EStatus {
+    init
     invested
     withdrawn
   }
 
+  """
+  Types
+  """
   type Action {
-    id: ID
-    tokenId: Int
-    token: String
-    action: EAction
-    average_price: Float
-    current_price: Float
-    prices: [Float]
-    percent: Float
-    status: EStatus
+    id: ID!
+    tokenId: Int!
+    token: String!
+    action: EAction!
+    average_price: Float!
+    current_price: Float!
+    prices: [Float]!
+    percent: Float!
+    status: EStatus!
+  }
+
+  type ActionsRes {
+    isUpdated: Boolean!
+    actions: [Action]!
   }
 
   """
@@ -37,21 +40,24 @@ const typeDefs = gql`
     tokenId: Int!
     token: String!
     action: EAction!
-    average_price: Float
-    current_price: Float
-    prices: [Float]
-    percent: Float
+    average_price: Float!
+    current_price: Float!
+    prices: [Float]!
+    percent: Float!
     status: EStatus!
   }
 
+  """
+  Queries
+  """
   type Query {
     getUser(id: ID!): String
-    getActions: [Action]
-    getActionByID(id: ID!): Action
+    getActions: ActionsRes!
+    getActionByID(id: ID!): Action!
   }
 
   type Mutation {
-    addAction(input: ActionInput!): Action
+    addAction(input: ActionInput!): Action!
   }
 `;
 

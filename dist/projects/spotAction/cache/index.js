@@ -30,7 +30,10 @@ exports.delCache = exports.setCache = exports.getCache = exports.cacheKey = void
 const node_cache_1 = __importDefault(require("node-cache"));
 const spotEnum = __importStar(require("../enum"));
 const { SPOT_ACTION } = spotEnum.Project;
-const cacheKey = { spotActionPrices: `${SPOT_ACTION}_prices` };
+const cacheKey = {
+    spotActionPrices: `${SPOT_ACTION}_prices`,
+    spotActionPriceTimestamp: `${SPOT_ACTION}_prices_timestamp`
+};
 exports.cacheKey = cacheKey;
 const cache = new node_cache_1.default({ stdTTL: 0 }); // 86400 (24h)
 const getCache = (k) => cache.get(k);
