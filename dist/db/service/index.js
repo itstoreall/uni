@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const enum_1 = require("../../projects/spotAction/enum");
 // ------
 const getAll = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
     return yield makeRequest(() => model.find({}));
@@ -16,19 +17,24 @@ const getAll = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
 const getByID = (_b) => __awaiter(void 0, [_b], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.findById(id));
 });
-const getByStatus = (_c) => __awaiter(void 0, [_c], void 0, function* ({ model, status }) {
+const getBTCPrise = (_c) => __awaiter(void 0, [_c], void 0, function* ({ model }) {
+    const btc = yield makeRequest(() => model.findOne({ token: enum_1.Symbol.BTC }));
+    return { price: btc.current_price, date: btc.updatedAt };
+    // return await makeRequest(() => model.find({ token: Token.BITCOIN }));
+});
+const getByStatus = (_d) => __awaiter(void 0, [_d], void 0, function* ({ model, status }) {
     return yield makeRequest(() => model.find({ status }));
 });
-const existsByID = (_d) => __awaiter(void 0, [_d], void 0, function* ({ model, id }) {
+const existsByID = (_e) => __awaiter(void 0, [_e], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.exists({ _id: id }));
 });
-const create = (_e) => __awaiter(void 0, [_e], void 0, function* ({ model, input }) {
+const create = (_f) => __awaiter(void 0, [_f], void 0, function* ({ model, input }) {
     return yield makeRequest(() => model.create(input));
 });
-const updateByID = (_f) => __awaiter(void 0, [_f], void 0, function* ({ model, id: _id, input }) {
+const updateByID = (_g) => __awaiter(void 0, [_g], void 0, function* ({ model, id: _id, input }) {
     return yield makeRequest(() => model.updateOne({ _id }, Object.assign({}, input)));
 });
-const removeByID = (_g) => __awaiter(void 0, [_g], void 0, function* ({ model, id }) {
+const removeByID = (_h) => __awaiter(void 0, [_h], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.deleteOne({ _id: id }));
 });
 const makeRequest = (cb) => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,6 +48,7 @@ const makeRequest = (cb) => __awaiter(void 0, void 0, void 0, function* () {
 exports.default = {
     getAll,
     getByID,
+    getBTCPrise,
     getByStatus,
     existsByID,
     create,

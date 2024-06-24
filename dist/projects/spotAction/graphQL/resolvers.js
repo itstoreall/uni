@@ -49,9 +49,7 @@ const resolvers = {
             winston_1.default.fn('getActions');
             const isUpdated = yield u.updateActions();
             const actions = yield u.getAllActions();
-            winston_1.default.info(`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
-            winston_1.default.fn(`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
-            winston_1.default.err(`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
+            winston_1.default[isUpdated ? 'info' : 'err'](`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
             return { isUpdated, actions };
         }),
         getActionByID: (_, args) => __awaiter(void 0, void 0, void 0, function* () {

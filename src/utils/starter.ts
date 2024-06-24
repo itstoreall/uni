@@ -1,5 +1,6 @@
 import os from 'os';
 import mongoose from 'mongoose';
+import w from '../winston';
 import * as spotActionUtils from '../projects/spotAction/utils';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
@@ -19,12 +20,10 @@ const dbCheck = (mongoose: any) => {
 // ------ Server:
 
 const starter: gt.RunServer = async port => {
-  console.log('* starter');
+  w.fn('starter');
   spotActionUtils.updateActions();
   const dbName = dbCheck(mongoose).db;
-  console.log('');
-  console.log(`  uni ${gu.isLocal() ? dev : prod}:${port} -> ${dbName} `);
-  console.log('');
+  w.info(`  uni ${gu.isLocal() ? dev : prod}:${port} -> ${dbName} `);
 };
 
 export default starter;

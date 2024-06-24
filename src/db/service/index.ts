@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import { Symbol } from '../../projects/spotAction/enum';
 import * as t from '../../projects/spotAction/types';
 
 export type ModelArg = { model: typeof Model };
@@ -21,6 +22,12 @@ const getAll = async ({ model }: ModelArg) => {
 
 const getByID = async ({ model, id }: IDArgs) => {
   return await makeRequest(() => model.findById(id));
+};
+
+const getBTCPrise = async ({ model }: ModelArg) => {
+  const btc = await makeRequest(() => model.findOne({ token: Symbol.BTC }));
+  return { price: btc.current_price, date: btc.updatedAt };
+  // return await makeRequest(() => model.find({ token: Token.BITCOIN }));
 };
 
 const getByStatus = async ({ model, status }: GetByStatusArgs) => {
@@ -54,6 +61,7 @@ const makeRequest: MakeRequest = async cb => {
 export default {
   getAll,
   getByID,
+  getBTCPrise,
   getByStatus,
   existsByID,
   create,

@@ -9,11 +9,14 @@ axios.defaults.baseURL = c.coingeckoBaseURL;
 const { GET } = gApi.Method;
 const { Token } = projEnum;
 
+let prc = 60000.11;
+
 export const getPrices = async () => {
+  prc += 1;
   const config = { method: GET, url: c.url };
   return gu.isLocal()
     ? {
-        [Token.BITCOIN]: { usd: 60000.11 },
+        [Token.BITCOIN]: { usd: prc },
         [Token.ETHEREUM]: { usd: 3000.22 },
         [Token.LITECOIN]: { usd: 80.33 },
         [Token.AVALANCHE]: { usd: 35.44 },
