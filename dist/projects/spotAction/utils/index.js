@@ -41,14 +41,23 @@ const service_1 = __importDefault(require("../../../db/service"));
 const db_1 = require("../../../db");
 // import * as gu from '../../../utils/global';
 const projEnum = __importStar(require("../enum"));
-const cache = __importStar(require("../cache"));
+// import * as cache from '../cache';
 const api = __importStar(require("../api"));
 const winston_1 = __importDefault(require("../../../winston"));
-const { cacheKey } = cache;
-const pricesKey = cacheKey.spotActionPrices;
-const timestampKey = cacheKey.spotActionPriceTimestamp;
+// const { cacheKey } = cache;
+// const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
+// const timestampKey = cacheKey.spotActionPriceTimestamp as cache.CacheKey;
 const { Project, Action, Status, Token, Symbol } = projEnum;
-const SpotActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
+const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
+// ------ General fns:
+const convertToTimestamp = (dateString) => {
+    const [datePart, timePart] = dateString.split(' at ');
+    const date = new Date(`${datePart} ${timePart}`);
+    // const date = new Date(`${datePart} ${timePart} GMT+0000`);
+    const timestamp = date.getTime();
+    return timestamp;
+};
+// ------
 const updateActions = () => __awaiter(void 0, void 0, void 0, function* () {
     winston_1.default.fn('updateActions');
     const isUpdated = yield (0, exports.fetchPrices)();
@@ -76,24 +85,32 @@ exports.updateActions = updateActions;
 // ------ Prices:
 const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     winston_1.default.fn('fetchPrices');
-    const cachedPrices = cache.getCache(pricesKey); // *
-    const cachedTimestamp = cache.getCache(timestampKey);
+    // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
+    // const cachedTimestamp = cache.getCache(timestampKey) as number;
+    const params = { model: ActionModel };
+    const btcAction = yield service_1.default.getBTCPrise(params);
+    const existiongTimestamp = convertToTimestamp(btcAction.date);
+    // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
     const FIVE_MINUTES = 5 * 60 * 1000;
-    if (cachedPrices && cachedTimestamp) {
+    if (existiongTimestamp) {
         const currentTime = Date.now();
-        const timeElapsed = currentTime - cachedTimestamp;
-        if (timeElapsed < FIVE_MINUTES)
+        // console.log('currentTime', currentTime);
+        // console.log('existiongTimestamp', existiongTimestamp);
+        const timeElapsed = currentTime - existiongTimestamp;
+        if (timeElapsed < FIVE_MINUTES) {
+            console.log('< FIVE_MINUTES', timeElapsed);
             return false;
-    }
-    try {
-        const prices = yield api.getPrices();
-        const currentTime = Date.now();
-        cache.setCache(pricesKey, prices);
-        cache.setCache(timestampKey, currentTime);
-        return true;
-    }
-    catch (e) {
-        console.error('ERROR in fetchPrices:', e);
+        }
+        else {
+            try {
+                const prices = yield api.getPrices();
+                const isUpdated = yield (0, exports.updatePrices)(prices);
+                return isUpdated ? true : false;
+            }
+            catch (e) {
+                console.error('ERROR in fetchPrices:', e);
+            }
+        }
     }
 });
 exports.fetchPrices = fetchPrices;
@@ -212,36 +229,39 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
             action.current_price = newPrice;
             action.percent = calculatePercentage(action, currentPrice);
             action.updatedAt = (0, getIntlDate_1.getIntlDate)();
-            /*
-            const updatedAction = await action.save();
-            if (updatedAction.token === action.token) actionCount += 1;
+            // /*
+            const updatedAction = yield action.save();
+            if (updatedAction.token === action.token)
+                actionCount += 1;
             // */
         }
     }
+    // console.log('actionCount === actions.length', actionCount === actions.length);
+    // console.log('=====>', actionCount, actions.length, actions[0]);
     return actionCount === actions.length;
 });
 exports.updatePrices = updatePrices;
 // ------ Actions:
 const getAllActions = () => __awaiter(void 0, void 0, void 0, function* () {
-    const params = { model: SpotActionModel };
+    const params = { model: ActionModel };
     return yield service_1.default.getAll(params);
 });
 exports.getAllActions = getAllActions;
 const getByStatus = () => __awaiter(void 0, void 0, void 0, function* () {
-    const params = { model: SpotActionModel, status: 'withdrawn' };
+    const params = { model: ActionModel, status: 'withdrawn' };
     return yield service_1.default.getByStatus(params);
 });
 exports.getByStatus = getByStatus;
 const existsByID = () => __awaiter(void 0, void 0, void 0, function* () {
-    const params = { model: SpotActionModel, id: '66378383526c576e5564afd6' };
+    const params = { model: ActionModel, id: '66378383526c576e5564afd6' };
     return yield service_1.default.existsByID(params);
 });
 exports.existsByID = existsByID;
 const createAction = (args) => __awaiter(void 0, void 0, void 0, function* () {
     const actions = yield (0, exports.getAllActions)();
-    const prices = cache.getCache(pricesKey);
+    // const prices = cache.getCache(pricesKey) as t.CurrentPrices;
     const id = actions.length ? actions[actions.length - 1].tokenId : 0;
-    const price = prices[Token.IOTA];
+    // const price = prices[Token.IOTA];
     const token = Symbol.IOTA;
     // const price = prices[args.token];
     // const token = Symbol.IOTA;
@@ -251,19 +271,20 @@ const createAction = (args) => __awaiter(void 0, void 0, void 0, function* () {
         token: token,
         action: Action.INIT,
         average_price: 0, // target
-        current_price: price ? price.usd : 0,
+        current_price: 0,
+        // current_price: price ? price.usd : 0,
         prices: [0], // target
         percent: 0,
         status: Status.INIT,
         updatedAt: (0, getIntlDate_1.getIntlDate)()
     };
-    const params = { model: SpotActionModel, input: actionInput };
+    const params = { model: ActionModel, input: actionInput };
     return yield service_1.default.create(params);
     return 0;
 });
 exports.createAction = createAction;
 const removeAction = () => __awaiter(void 0, void 0, void 0, function* () {
-    const params = { model: SpotActionModel, id: '664b8e13a1d72b0f6e7ab2b7' };
+    const params = { model: ActionModel, id: '664b8e13a1d72b0f6e7ab2b7' };
     return (yield service_1.default.removeByID(params)).deletedCount; // 0 or 1
 });
 exports.removeAction = removeAction;

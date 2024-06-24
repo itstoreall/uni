@@ -15,9 +15,7 @@ const resolvers = {
       w.fn('getActions');
       const isUpdated = await u.updateActions();
       const actions = await u.getAllActions();
-      w.info(`updated: ${isUpdated} ${actions?.length}`);
-      w.fn(`updated: ${isUpdated} ${actions?.length}`);
-      w.err(`updated: ${isUpdated} ${actions?.length}`);
+      w[isUpdated ? 'info' : 'err'](`updated: ${isUpdated} ${actions?.length}`);
       return { isUpdated, actions };
     },
 

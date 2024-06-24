@@ -37,6 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const os_1 = __importDefault(require("os"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const winston_1 = __importDefault(require("../winston"));
 const spotActionUtils = __importStar(require("../projects/spotAction/utils"));
 const gc = __importStar(require("../config/global"));
 const gu = __importStar(require("./global"));
@@ -50,12 +51,10 @@ const dbCheck = (mongoose) => {
 };
 // ------ Server:
 const starter = (port) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('* starter');
+    winston_1.default.fn('starter');
     spotActionUtils.updateActions();
     const dbName = dbCheck(mongoose_1.default).db;
-    console.log('');
-    console.log(`  uni ${gu.isLocal() ? dev : prod}:${port} -> ${dbName} `);
-    console.log('');
+    winston_1.default.info(`  uni ${gu.isLocal() ? dev : prod}:${port} -> ${dbName} `);
 });
 exports.default = starter;
 //# sourceMappingURL=starter.js.map

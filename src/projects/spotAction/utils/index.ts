@@ -3,16 +3,28 @@ import service from '../../../db/service';
 import { getModel } from '../../../db';
 // import * as gu from '../../../utils/global';
 import * as projEnum from '../enum';
-import * as cache from '../cache';
+// import * as cache from '../cache';
 import * as api from '../api';
 import * as t from '../types';
 import w from '../../../winston';
 
-const { cacheKey } = cache;
-const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
-const timestampKey = cacheKey.spotActionPriceTimestamp as cache.CacheKey;
+// const { cacheKey } = cache;
+// const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
+// const timestampKey = cacheKey.spotActionPriceTimestamp as cache.CacheKey;
 const { Project, Action, Status, Token, Symbol } = projEnum;
-const SpotActionModel = getModel(Project.SPOT_ACTION);
+const ActionModel = getModel(Project.SPOT_ACTION);
+
+// ------ General fns:
+
+const convertToTimestamp = (dateString: string) => {
+  const [datePart, timePart] = dateString.split(' at ');
+  const date = new Date(`${datePart} ${timePart}`);
+  // const date = new Date(`${datePart} ${timePart} GMT+0000`);
+  const timestamp = date.getTime();
+  return timestamp;
+};
+
+// ------
 
 export const updateActions = async () => {
   w.fn('updateActions');
@@ -47,25 +59,37 @@ export const updateActions = async () => {
 export const fetchPrices = async () => {
   w.fn('fetchPrices');
 
-  const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
-  const cachedTimestamp = cache.getCache(timestampKey) as number;
+  // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
+  // const cachedTimestamp = cache.getCache(timestampKey) as number;
+
+  const params = { model: ActionModel };
+  const btcAction = await service.getBTCPrise(params);
+  const existiongTimestamp = convertToTimestamp(btcAction.date);
+
+  // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
 
   const FIVE_MINUTES = 5 * 60 * 1000;
 
-  if (cachedPrices && cachedTimestamp) {
+  if (existiongTimestamp) {
     const currentTime = Date.now();
-    const timeElapsed = currentTime - cachedTimestamp;
-    if (timeElapsed < FIVE_MINUTES) return false;
-  }
 
-  try {
-    const prices: t.CurrentPrices = await api.getPrices();
-    const currentTime = Date.now();
-    cache.setCache(pricesKey, prices);
-    cache.setCache(timestampKey, currentTime);
-    return true;
-  } catch (e) {
-    console.error('ERROR in fetchPrices:', e);
+    // console.log('currentTime', currentTime);
+    // console.log('existiongTimestamp', existiongTimestamp);
+
+    const timeElapsed = currentTime - existiongTimestamp;
+
+    if (timeElapsed < FIVE_MINUTES) {
+      console.log('< FIVE_MINUTES', timeElapsed);
+      return false;
+    } else {
+      try {
+        const prices: t.CurrentPrices = await api.getPrices();
+        const isUpdated = await updatePrices(prices);
+        return isUpdated ? true : false;
+      } catch (e) {
+        console.error('ERROR in fetchPrices:', e);
+      }
+    }
   }
 };
 
@@ -191,12 +215,15 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
       action.percent = calculatePercentage(action, currentPrice);
       action.updatedAt = getIntlDate();
 
-      /*
+      // /*
       const updatedAction = await action.save();
       if (updatedAction.token === action.token) actionCount += 1;
       // */
     }
   }
+
+  // console.log('actionCount === actions.length', actionCount === actions.length);
+  // console.log('=====>', actionCount, actions.length, actions[0]);
 
   return actionCount === actions.length;
 };
@@ -204,17 +231,17 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
 // ------ Actions:
 
 export const getAllActions = async () => {
-  const params = { model: SpotActionModel };
+  const params = { model: ActionModel };
   return await service.getAll(params);
 };
 
 export const getByStatus = async () => {
-  const params = { model: SpotActionModel, status: 'withdrawn' };
+  const params = { model: ActionModel, status: 'withdrawn' };
   return await service.getByStatus(params);
 };
 
 export const existsByID = async () => {
-  const params = { model: SpotActionModel, id: '66378383526c576e5564afd6' };
+  const params = { model: ActionModel, id: '66378383526c576e5564afd6' };
   return await service.existsByID(params);
 };
 
@@ -222,9 +249,9 @@ type CreateActionArgs = { token: any; symbol: any };
 
 export const createAction = async (args: CreateActionArgs) => {
   const actions = await getAllActions();
-  const prices = cache.getCache(pricesKey) as t.CurrentPrices;
+  // const prices = cache.getCache(pricesKey) as t.CurrentPrices;
   const id = actions.length ? actions[actions.length - 1].tokenId : 0;
-  const price = prices[Token.IOTA];
+  // const price = prices[Token.IOTA];
   const token = Symbol.IOTA;
   // const price = prices[args.token];
   // const token = Symbol.IOTA;
@@ -236,19 +263,20 @@ export const createAction = async (args: CreateActionArgs) => {
     token: token,
     action: Action.INIT,
     average_price: 0, // target
-    current_price: price ? price.usd : 0,
+    current_price: 0,
+    // current_price: price ? price.usd : 0,
     prices: [0], // target
     percent: 0,
     status: Status.INIT,
     updatedAt: getIntlDate()
   };
 
-  const params = { model: SpotActionModel, input: actionInput };
+  const params = { model: ActionModel, input: actionInput };
   return await service.create(params);
   return 0;
 };
 
 export const removeAction = async () => {
-  const params = { model: SpotActionModel, id: '664b8e13a1d72b0f6e7ab2b7' };
+  const params = { model: ActionModel, id: '664b8e13a1d72b0f6e7ab2b7' };
   return (await service.removeByID(params)).deletedCount; // 0 or 1
 };

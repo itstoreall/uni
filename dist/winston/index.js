@@ -22,10 +22,10 @@ const transports = [
         format: winston_1.default.format.combine(winston_1.default.format.colorize({ all: true }), winston_1.default.format.printf(({ level, message, newline }) => {
             return level.includes('info') || level.includes('error')
                 ? newline
-                    ? `\n${message}\n`
+                    ? `${message}\n`
                     : `${message}`
                 : newline
-                    ? `\n${level} ${message}\n`
+                    ? `${level} ${message}\n`
                     : `${level} ${message}`;
         }))
     })
@@ -37,7 +37,7 @@ const logger = winston_1.default.createLogger({
 });
 const template = (level, text, newline) => logger.log({ level, message: text, newline });
 exports.default = {
-    fn: (msg, n = false) => template('*', msg, n),
+    fn: (msg, n = true) => template('*', msg, n),
     info: (msg, n = false) => template('info', msg, n),
     err: (msg, n = false) => template('error', msg, n)
 };

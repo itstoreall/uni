@@ -28,10 +28,10 @@ const transports = [
       winston.format.printf(({ level, message, newline }) => {
         return level.includes('info') || level.includes('error')
           ? newline
-            ? `\n${message}\n`
+            ? `${message}\n`
             : `${message}`
           : newline
-          ? `\n${level} ${message}\n`
+          ? `${level} ${message}\n`
           : `${level} ${message}`;
       })
     )
@@ -48,7 +48,7 @@ const template = (level: string, text: string, newline: boolean) =>
   logger.log({ level, message: text, newline });
 
 export default {
-  fn: (msg, n = false) => template('*', msg, n),
+  fn: (msg, n = true) => template('*', msg, n),
   info: (msg, n = false) => template('info', msg, n),
   err: (msg, n = false) => template('error', msg, n)
 } as Loger;
