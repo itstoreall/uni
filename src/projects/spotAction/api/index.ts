@@ -14,12 +14,12 @@ let prc = 60000.11;
 export const getPrices = async () => {
   prc += 1;
 
-  // /*
+  /*
   const config = { method: GET, url: c.url };
   return await gApi.makeRequest(config);
   // */
 
-  /*
+  // /*
   return {
     [Token.BITCOIN]: { usd: prc },
     [Token.ETHEREUM]: { usd: 3000.22 },
