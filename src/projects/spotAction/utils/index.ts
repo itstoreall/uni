@@ -8,9 +8,6 @@ import * as api from '../api';
 import * as t from '../types';
 import w from '../../../winston';
 
-// const { cacheKey } = cache;
-// const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
-// const timestampKey = cacheKey.spotActionPriceTimestamp as cache.CacheKey;
 const { Project, Action, Status, Token, Symbol } = projEnum;
 const ActionModel = getModel(Project.SPOT_ACTION);
 
@@ -29,6 +26,7 @@ const convertToTimestamp = (dateString: string) => {
 export const updateActions = async () => {
   w.fn('updateActions');
   const isUpdated = await fetchPrices();
+  console.log('updated ====>', isUpdated);
 
   /*
   const isUpdated = await updatePrices(prices);
@@ -59,44 +57,83 @@ export const updateActions = async () => {
 export const fetchPrices = async () => {
   w.fn('fetchPrices');
 
-  // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
-  // const cachedTimestamp = cache.getCache(timestampKey) as number;
-
   const params = { model: ActionModel };
   const btcAction = await service.getBTCPrise(params);
   const existiongTimestamp = convertToTimestamp(btcAction.date);
 
-  // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
+  console.log('btcAction', btcAction); // { price: 60001.11, date: '25 June 2024 at 17:40:08' }
+  console.log('existiongTimestamp', existiongTimestamp); // 1719326408000
 
-  const DELAY = 1 * 60 * 1000;
+  const currentTime = Date.now();
+  const fiveMinutesInMillis = 0.5 * 60 * 1000;
 
-  if (existiongTimestamp) {
-    const currentTime = Date.now();
-
-    // console.log('currentTime', currentTime);
-    // console.log('existiongTimestamp', existiongTimestamp);
-
-    const timeElapsed = currentTime - existiongTimestamp;
-
-    /*
+  if (currentTime - existiongTimestamp > fiveMinutesInMillis) {
     try {
       const prices: t.CurrentPrices = await api.getPrices();
-      console.log('prices', prices);
-      const isUpdated = await updatePrices(prices);
-      return isUpdated ? true : false;
+      console.log('prices', prices.bitcoin);
+      await updatePrices(prices);
+      return true;
     } catch (e) {
       console.error('ERROR in fetchPrices:', e);
+      return false;
+    }
+  } else {
+    console.log('Less than 5 minutes have passed since the last timestamp.');
+    return false;
+  }
+
+  /*
+  try {
+    const prices: t.CurrentPrices = await api.getPrices();
+    console.log('prices', prices.bitcoin);
+    await updatePrices(prices);
+    return true;
+  } catch (e) {
+    console.error('ERROR in fetchPrices:', e);
+    return false;
+  }
+  */
+
+  // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
+  // const cachedTimestamp = cache.getCache(timestampKey) as number;
+
+  // const params = { model: ActionModel };
+  // const btcAction = await service.getBTCPrise(params);
+  // const existiongTimestamp = convertToTimestamp(btcAction.date);
+
+  // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
+
+  // const DELAY = 1 * 60 * 1000;
+
+  // if (existiongTimestamp) {
+  // const currentTime = Date.now();
+
+  // const timeElapsed = currentTime - existiongTimestamp;
+
+  // console.log('currentTime', currentTime);
+  // console.log('existiongTimestamp', existiongTimestamp);
+  // console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
+
+  /*
+    try {
+      const prices: t.CurrentPrices = await api.getPrices();
+      console.log('prices', prices.bitcoin);
+      await updatePrices(prices);
+      return true;
+    } catch (e) {
+      console.error('ERROR in fetchPrices:', e);
+      return false;
     }
     // */
 
-    // /*
+  /*
     if (timeElapsed < DELAY) {
-      // console.log('< FIVE_MINUTES', timeElapsed);
+      console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
       return false;
     } else {
       try {
         const prices: t.CurrentPrices = await api.getPrices();
-        // console.log('prices', prices);
+        console.log('prices', prices);
         await updatePrices(prices);
       } catch (e) {
         console.error('ERROR in fetchPrices:', e);
@@ -105,7 +142,7 @@ export const fetchPrices = async () => {
       return true;
     }
     // */
-  }
+  // }
 };
 
 export const updatePrices = async (prices: t.CurrentPrices) => {

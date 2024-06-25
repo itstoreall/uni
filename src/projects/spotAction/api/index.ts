@@ -11,6 +11,8 @@ const { Token } = projEnum;
 
 let prc = 60000.11;
 
+console.log('prc ->', prc);
+
 export const getPrices = async () => {
   prc += 1;
 
