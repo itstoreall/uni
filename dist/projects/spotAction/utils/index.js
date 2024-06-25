@@ -91,36 +91,37 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     const btcAction = yield service_1.default.getBTCPrise(params);
     const existiongTimestamp = convertToTimestamp(btcAction.date);
     // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
-    const FIVE_MINUTES = 1 * 60 * 1000;
+    const DELAY = 5 * 60 * 1000;
     if (existiongTimestamp) {
         const currentTime = Date.now();
         // console.log('currentTime', currentTime);
         // console.log('existiongTimestamp', existiongTimestamp);
         const timeElapsed = currentTime - existiongTimestamp;
-        // /*
+        /*
         try {
-            const prices = yield api.getPrices();
-            console.log('prices', prices);
-            const isUpdated = yield (0, exports.updatePrices)(prices);
-            return isUpdated ? true : false;
-        }
-        catch (e) {
-            console.error('ERROR in fetchPrices:', e);
+          const prices: t.CurrentPrices = await api.getPrices();
+          console.log('prices', prices);
+          const isUpdated = await updatePrices(prices);
+          return isUpdated ? true : false;
+        } catch (e) {
+          console.error('ERROR in fetchPrices:', e);
         }
         // */
-        /*
-        if (timeElapsed < FIVE_MINUTES) {
-          // console.log('< FIVE_MINUTES', timeElapsed);
-          return false;
-        } else {
-          try {
-            const prices: t.CurrentPrices = await api.getPrices();
-            console.log('prices', prices);
-            const isUpdated = await updatePrices(prices);
-            return isUpdated ? true : false;
-          } catch (e) {
-            console.error('ERROR in fetchPrices:', e);
-          }
+        // /*
+        if (timeElapsed < DELAY) {
+            // console.log('< FIVE_MINUTES', timeElapsed);
+            return false;
+        }
+        else {
+            try {
+                const prices = yield api.getPrices();
+                // console.log('prices', prices);
+                const isUpdated = yield (0, exports.updatePrices)(prices);
+                return isUpdated ? true : false;
+            }
+            catch (e) {
+                console.error('ERROR in fetchPrices:', e);
+            }
         }
         // */
     }
