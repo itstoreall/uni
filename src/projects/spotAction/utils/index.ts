@@ -78,7 +78,7 @@ export const fetchPrices = async () => {
 
     const timeElapsed = currentTime - existiongTimestamp;
 
-    /*
+    // /*
     try {
       const prices: t.CurrentPrices = await api.getPrices();
       console.log('prices', prices);
@@ -89,7 +89,7 @@ export const fetchPrices = async () => {
     }
     // */
 
-    // /*
+    /*
     if (timeElapsed < FIVE_MINUTES) {
       // console.log('< FIVE_MINUTES', timeElapsed);
       return false;

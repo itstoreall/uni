@@ -50,7 +50,6 @@ const resolvers = {
             winston_1.default.fn('getActions');
             const isUpdated = yield u.updateActions();
             const actions = yield u.getAllActions();
-            getIntlDate_1.dateConfig.format.time;
             const time = (0, getIntlDate_1.getIntlDate)(getIntlDate_1.dateConfig.format.time.label);
             winston_1.default[isUpdated ? 'info' : 'err'](`updated: ${isUpdated} ${time} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
             return { isUpdated, actions, time };

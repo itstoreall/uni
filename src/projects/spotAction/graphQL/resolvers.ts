@@ -16,7 +16,6 @@ const resolvers = {
       w.fn('getActions');
       const isUpdated = await u.updateActions();
       const actions = await u.getAllActions();
-      dateConfig.format.time;
       const time = getIntlDate(dateConfig.format.time.label);
       w[isUpdated ? 'info' : 'err'](
         `updated: ${isUpdated} ${time} ${actions?.length}`
