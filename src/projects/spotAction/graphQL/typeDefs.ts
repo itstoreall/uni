@@ -26,6 +26,7 @@ const typeDefs = gql`
     prices: [Float]!
     percent: Float!
     status: EStatus!
+    updatedAt: String!
   }
 
   type ActionsRes {
