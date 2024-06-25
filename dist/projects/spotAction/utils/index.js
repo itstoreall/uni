@@ -97,21 +97,30 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
         // console.log('currentTime', currentTime);
         // console.log('existiongTimestamp', existiongTimestamp);
         const timeElapsed = currentTime - existiongTimestamp;
+        try {
+            const prices = yield api.getPrices();
+            console.log('prices', prices);
+            const isUpdated = yield (0, exports.updatePrices)(prices);
+            return isUpdated ? true : false;
+        }
+        catch (e) {
+            console.error('ERROR in fetchPrices:', e);
+        }
+        /*
         if (timeElapsed < FIVE_MINUTES) {
-            // console.log('< FIVE_MINUTES', timeElapsed);
-            return false;
+          // console.log('< FIVE_MINUTES', timeElapsed);
+          return false;
+        } else {
+          try {
+            const prices: t.CurrentPrices = await api.getPrices();
+            console.log('prices', prices);
+            const isUpdated = await updatePrices(prices);
+            return isUpdated ? true : false;
+          } catch (e) {
+            console.error('ERROR in fetchPrices:', e);
+          }
         }
-        else {
-            try {
-                const prices = yield api.getPrices();
-                console.log('prices', prices);
-                const isUpdated = yield (0, exports.updatePrices)(prices);
-                return isUpdated ? true : false;
-            }
-            catch (e) {
-                console.error('ERROR in fetchPrices:', e);
-            }
-        }
+        // */
     }
 });
 exports.fetchPrices = fetchPrices;
