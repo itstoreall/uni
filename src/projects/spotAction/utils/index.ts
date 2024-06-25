@@ -3,7 +3,6 @@ import service from '../../../db/service';
 import { getModel } from '../../../db';
 // import * as gu from '../../../utils/global';
 import * as projEnum from '../enum';
-// import * as cache from '../cache';
 import * as api from '../api';
 import * as t from '../types';
 import w from '../../../winston';
@@ -13,20 +12,18 @@ const ActionModel = getModel(Project.SPOT_ACTION);
 
 // ------ General fns:
 
-const convertToTimestamp = (dateString: string) => {
+export const convertToTimestamp = (dateString: string) => {
   const [datePart, timePart] = dateString.split(' at ');
-  const date = new Date(`${datePart} ${timePart}`);
-  // const date = new Date(`${datePart} ${timePart} GMT+0000`);
+  const date = new Date(`${datePart} ${timePart}`); // ${timePart} GMT+0000`)
   const timestamp = date.getTime();
   return timestamp;
 };
 
-// ------
+// ------ Update :
 
 export const updateActions = async () => {
   w.fn('updateActions');
   const isUpdated = await fetchPrices();
-  console.log('updated ====>', isUpdated);
 
   /*
   const isUpdated = await updatePrices(prices);
@@ -56,93 +53,19 @@ export const updateActions = async () => {
 
 export const fetchPrices = async () => {
   w.fn('fetchPrices');
-
   const params = { model: ActionModel };
-  const btcAction = await service.getBTCPrise(params);
-  const existiongTimestamp = convertToTimestamp(btcAction.date);
-
-  console.log('btcAction', btcAction); // { price: 60001.11, date: '25 June 2024 at 17:40:08' }
-  console.log('existiongTimestamp', existiongTimestamp); // 1719326408000
-
-  const currentTime = Date.now();
-  const fiveMinutesInMillis = 0.5 * 60 * 1000;
-
-  if (currentTime - existiongTimestamp > fiveMinutesInMillis) {
-    try {
-      const prices: t.CurrentPrices = await api.getPrices();
-      console.log('prices', prices.bitcoin);
-      await updatePrices(prices);
-      return true;
-    } catch (e) {
-      console.error('ERROR in fetchPrices:', e);
-      return false;
-    }
-  } else {
-    console.log('Less than 5 minutes have passed since the last timestamp.');
-    return false;
-  }
-
-  /*
+  const btc = await service.getBTCPrise(params);
   try {
     const prices: t.CurrentPrices = await api.getPrices();
-    console.log('prices', prices.bitcoin);
-    await updatePrices(prices);
-    return true;
-  } catch (e) {
-    console.error('ERROR in fetchPrices:', e);
-    return false;
-  }
-  */
-
-  // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
-  // const cachedTimestamp = cache.getCache(timestampKey) as number;
-
-  // const params = { model: ActionModel };
-  // const btcAction = await service.getBTCPrise(params);
-  // const existiongTimestamp = convertToTimestamp(btcAction.date);
-
-  // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
-
-  // const DELAY = 1 * 60 * 1000;
-
-  // if (existiongTimestamp) {
-  // const currentTime = Date.now();
-
-  // const timeElapsed = currentTime - existiongTimestamp;
-
-  // console.log('currentTime', currentTime);
-  // console.log('existiongTimestamp', existiongTimestamp);
-  // console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
-
-  /*
-    try {
-      const prices: t.CurrentPrices = await api.getPrices();
-      console.log('prices', prices.bitcoin);
+    // console.log('btc/prices', btc.price, prices.bitcoin.usd);
+    if (prices.bitcoin.usd !== btc.price) {
       await updatePrices(prices);
       return true;
-    } catch (e) {
-      console.error('ERROR in fetchPrices:', e);
-      return false;
-    }
-    // */
-
-  /*
-    if (timeElapsed < DELAY) {
-      console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
-      return false;
-    } else {
-      try {
-        const prices: t.CurrentPrices = await api.getPrices();
-        console.log('prices', prices);
-        await updatePrices(prices);
-      } catch (e) {
-        console.error('ERROR in fetchPrices:', e);
-      }
-
-      return true;
-    }
-    // */
-  // }
+    } else return false;
+  } catch (e) {
+    w.err(`ERROR in fetchPrices: ${e.message}`);
+    return false;
+  }
 };
 
 export const updatePrices = async (prices: t.CurrentPrices) => {
