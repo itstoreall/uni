@@ -94,9 +94,10 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     const DELAY = 1 * 60 * 1000;
     if (existiongTimestamp) {
         const currentTime = Date.now();
+        const timeElapsed = currentTime - existiongTimestamp;
         // console.log('currentTime', currentTime);
         // console.log('existiongTimestamp', existiongTimestamp);
-        const timeElapsed = currentTime - existiongTimestamp;
+        // console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
         /*
         try {
           const prices: t.CurrentPrices = await api.getPrices();
@@ -109,13 +110,13 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
         // */
         // /*
         if (timeElapsed < DELAY) {
-            // console.log('< FIVE_MINUTES', timeElapsed);
+            console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
             return false;
         }
         else {
             try {
                 const prices = yield api.getPrices();
-                // console.log('prices', prices);
+                console.log('prices', prices);
                 yield (0, exports.updatePrices)(prices);
             }
             catch (e) {

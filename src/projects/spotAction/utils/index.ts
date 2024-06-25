@@ -73,10 +73,11 @@ export const fetchPrices = async () => {
   if (existiongTimestamp) {
     const currentTime = Date.now();
 
+    const timeElapsed = currentTime - existiongTimestamp;
+
     // console.log('currentTime', currentTime);
     // console.log('existiongTimestamp', existiongTimestamp);
-
-    const timeElapsed = currentTime - existiongTimestamp;
+    // console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
 
     /*
     try {
@@ -91,12 +92,12 @@ export const fetchPrices = async () => {
 
     // /*
     if (timeElapsed < DELAY) {
-      // console.log('< FIVE_MINUTES', timeElapsed);
+      console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
       return false;
     } else {
       try {
         const prices: t.CurrentPrices = await api.getPrices();
-        // console.log('prices', prices);
+        console.log('prices', prices);
         await updatePrices(prices);
       } catch (e) {
         console.error('ERROR in fetchPrices:', e);
