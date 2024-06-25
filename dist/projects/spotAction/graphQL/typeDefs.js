@@ -27,6 +27,7 @@ const typeDefs = (0, apollo_server_express_1.gql) `
     prices: [Float]!
     percent: Float!
     status: EStatus!
+    updatedAt: String!
   }
 
   type ActionsRes {
