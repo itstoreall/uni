@@ -79,11 +79,12 @@ export const fetchPrices = async () => {
     const timeElapsed = currentTime - existiongTimestamp;
 
     if (timeElapsed < FIVE_MINUTES) {
-      console.log('< FIVE_MINUTES', timeElapsed);
+      // console.log('< FIVE_MINUTES', timeElapsed);
       return false;
     } else {
       try {
         const prices: t.CurrentPrices = await api.getPrices();
+        console.log('prices', prices);
         const isUpdated = await updatePrices(prices);
         return isUpdated ? true : false;
       } catch (e) {

@@ -98,12 +98,13 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
         // console.log('existiongTimestamp', existiongTimestamp);
         const timeElapsed = currentTime - existiongTimestamp;
         if (timeElapsed < FIVE_MINUTES) {
-            console.log('< FIVE_MINUTES', timeElapsed);
+            // console.log('< FIVE_MINUTES', timeElapsed);
             return false;
         }
         else {
             try {
                 const prices = yield api.getPrices();
+                console.log('prices', prices);
                 const isUpdated = yield (0, exports.updatePrices)(prices);
                 return isUpdated ? true : false;
             }

@@ -14,6 +14,9 @@ let prc = 60000.11;
 export const getPrices = async () => {
   prc += 1;
   const config = { method: GET, url: c.url };
+  return await gApi.makeRequest(config);
+
+  /*
   return gu.isLocal()
     ? {
         [Token.BITCOIN]: { usd: prc },
@@ -112,4 +115,5 @@ export const getPrices = async () => {
         [Token.IOTA]: { usd: 0.22 }
       }
     : gApi.makeRequest(config);
+    */
 };
