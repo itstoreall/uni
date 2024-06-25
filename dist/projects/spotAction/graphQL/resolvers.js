@@ -41,6 +41,7 @@ const db_1 = require("../../../db");
 const spotEnum = __importStar(require("../enum"));
 const u = __importStar(require("../utils"));
 const winston_1 = __importDefault(require("../../../winston"));
+const getIntlDate_1 = require("../../../utils/getIntlDate");
 const { Project } = spotEnum;
 const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
 const resolvers = {
@@ -49,8 +50,10 @@ const resolvers = {
             winston_1.default.fn('getActions');
             const isUpdated = yield u.updateActions();
             const actions = yield u.getAllActions();
-            winston_1.default[isUpdated ? 'info' : 'err'](`updated: ${isUpdated} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
-            return { isUpdated, actions };
+            getIntlDate_1.dateConfig.format.time;
+            const time = (0, getIntlDate_1.getIntlDate)(getIntlDate_1.dateConfig.format.time.label);
+            winston_1.default[isUpdated ? 'info' : 'err'](`updated: ${isUpdated} ${time} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
+            return { isUpdated, actions, time };
         }),
         getActionByID: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const params = { model: ActionModel, id: args.id };

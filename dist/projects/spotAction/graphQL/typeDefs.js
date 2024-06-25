@@ -32,6 +32,7 @@ const typeDefs = (0, apollo_server_express_1.gql) `
   type ActionsRes {
     isUpdated: Boolean!
     actions: [Action]!
+    time: String!
   }
 
   """

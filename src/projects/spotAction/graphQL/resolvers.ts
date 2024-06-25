@@ -5,6 +5,7 @@ import * as spotEnum from '../enum';
 import * as t from '../types';
 import * as u from '../utils';
 import w from '../../../winston';
+import { dateConfig, getIntlDate } from '../../../utils/getIntlDate';
 
 const { Project } = spotEnum;
 const ActionModel = getModel(Project.SPOT_ACTION);
@@ -15,8 +16,12 @@ const resolvers = {
       w.fn('getActions');
       const isUpdated = await u.updateActions();
       const actions = await u.getAllActions();
-      w[isUpdated ? 'info' : 'err'](`updated: ${isUpdated} ${actions?.length}`);
-      return { isUpdated, actions };
+      dateConfig.format.time;
+      const time = getIntlDate(dateConfig.format.time.label);
+      w[isUpdated ? 'info' : 'err'](
+        `updated: ${isUpdated} ${time} ${actions?.length}`
+      );
+      return { isUpdated, actions, time };
     },
 
     getActionByID: async (_: any, args: { id: string }) => {
