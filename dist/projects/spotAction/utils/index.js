@@ -91,34 +91,37 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     const btcAction = yield service_1.default.getBTCPrise(params);
     const existiongTimestamp = convertToTimestamp(btcAction.date);
     // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
-    const FIVE_MINUTES = 5 * 60 * 1000;
+    const FIVE_MINUTES = 1 * 60 * 1000;
     if (existiongTimestamp) {
         const currentTime = Date.now();
         // console.log('currentTime', currentTime);
         // console.log('existiongTimestamp', existiongTimestamp);
         const timeElapsed = currentTime - existiongTimestamp;
-        try {
-            const prices = yield api.getPrices();
-            console.log('prices', prices);
-            const isUpdated = yield (0, exports.updatePrices)(prices);
-            return isUpdated ? true : false;
-        }
-        catch (e) {
-            console.error('ERROR in fetchPrices:', e);
-        }
         /*
+        try {
+          const prices: t.CurrentPrices = await api.getPrices();
+          console.log('prices', prices);
+          const isUpdated = await updatePrices(prices);
+          return isUpdated ? true : false;
+        } catch (e) {
+          console.error('ERROR in fetchPrices:', e);
+        }
+        // */
+        // /*
         if (timeElapsed < FIVE_MINUTES) {
-          // console.log('< FIVE_MINUTES', timeElapsed);
-          return false;
-        } else {
-          try {
-            const prices: t.CurrentPrices = await api.getPrices();
-            console.log('prices', prices);
-            const isUpdated = await updatePrices(prices);
-            return isUpdated ? true : false;
-          } catch (e) {
-            console.error('ERROR in fetchPrices:', e);
-          }
+            // console.log('< FIVE_MINUTES', timeElapsed);
+            return false;
+        }
+        else {
+            try {
+                const prices = yield api.getPrices();
+                console.log('prices', prices);
+                const isUpdated = yield (0, exports.updatePrices)(prices);
+                return isUpdated ? true : false;
+            }
+            catch (e) {
+                console.error('ERROR in fetchPrices:', e);
+            }
         }
         // */
     }
@@ -223,7 +226,7 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
         [Symbol.EVMOS]: (_60 = prices[Token.EVMOS]) === null || _60 === void 0 ? void 0 : _60.usd,
         [Symbol.IOTA]: (_61 = prices[Token.IOTA]) === null || _61 === void 0 ? void 0 : _61.usd
     };
-    let actionCount = 0;
+    // let actionCount: number = 0;
     const calculatePercentage = (action, price) => {
         const rawPercent = action.average_price
             ? (price / action.average_price) * 100
@@ -239,10 +242,10 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
             action.current_price = newPrice;
             action.percent = calculatePercentage(action, currentPrice);
             action.updatedAt = (0, getIntlDate_1.getIntlDate)();
+            yield action.save();
             // /*
-            const updatedAction = yield action.save();
-            if (updatedAction.token === action.token)
-                actionCount += 1;
+            // const updatedAction = await action.save();
+            // if (updatedAction.token === action.token) actionCount += 1;
             // */
         }
     }

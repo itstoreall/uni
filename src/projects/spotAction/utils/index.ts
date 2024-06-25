@@ -68,7 +68,7 @@ export const fetchPrices = async () => {
 
   // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
 
-  const FIVE_MINUTES = 5 * 60 * 1000;
+  const FIVE_MINUTES = 1 * 60 * 1000;
 
   if (existiongTimestamp) {
     const currentTime = Date.now();
@@ -78,6 +78,7 @@ export const fetchPrices = async () => {
 
     const timeElapsed = currentTime - existiongTimestamp;
 
+    /*
     try {
       const prices: t.CurrentPrices = await api.getPrices();
       console.log('prices', prices);
@@ -86,8 +87,9 @@ export const fetchPrices = async () => {
     } catch (e) {
       console.error('ERROR in fetchPrices:', e);
     }
+    // */
 
-    /*
+    // /*
     if (timeElapsed < FIVE_MINUTES) {
       // console.log('< FIVE_MINUTES', timeElapsed);
       return false;
@@ -205,7 +207,7 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
     [Symbol.IOTA]: prices[Token.IOTA]?.usd
   };
 
-  let actionCount: number = 0;
+  // let actionCount: number = 0;
 
   const calculatePercentage = (action: t.SpotAction, price: number) => {
     const rawPercent = action.average_price
@@ -226,10 +228,11 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
       action.current_price = newPrice;
       action.percent = calculatePercentage(action, currentPrice);
       action.updatedAt = getIntlDate();
+      await action.save();
 
       // /*
-      const updatedAction = await action.save();
-      if (updatedAction.token === action.token) actionCount += 1;
+      // const updatedAction = await action.save();
+      // if (updatedAction.token === action.token) actionCount += 1;
       // */
     }
   }
