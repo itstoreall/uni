@@ -45,6 +45,7 @@ axios_1.default.defaults.baseURL = c.coingeckoBaseURL;
 const { GET } = gApi.Method;
 const { Token } = projEnum;
 let prc = 60000.11;
+console.log('prc ->', prc);
 const getPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     prc += 1;
     const config = { method: GET, url: c.url };

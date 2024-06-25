@@ -44,9 +44,6 @@ const projEnum = __importStar(require("../enum"));
 // import * as cache from '../cache';
 const api = __importStar(require("../api"));
 const winston_1 = __importDefault(require("../../../winston"));
-// const { cacheKey } = cache;
-// const pricesKey = cacheKey.spotActionPrices as cache.CacheKey;
-// const timestampKey = cacheKey.spotActionPriceTimestamp as cache.CacheKey;
 const { Project, Action, Status, Token, Symbol } = projEnum;
 const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
 // ------ General fns:
@@ -61,6 +58,7 @@ const convertToTimestamp = (dateString) => {
 const updateActions = () => __awaiter(void 0, void 0, void 0, function* () {
     winston_1.default.fn('updateActions');
     const isUpdated = yield (0, exports.fetchPrices)();
+    console.log('updated ====>', isUpdated);
     /*
     const isUpdated = await updatePrices(prices);
     if (!isUpdated) return;
@@ -85,47 +83,81 @@ exports.updateActions = updateActions;
 // ------ Prices:
 const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     winston_1.default.fn('fetchPrices');
-    // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
-    // const cachedTimestamp = cache.getCache(timestampKey) as number;
     const params = { model: ActionModel };
     const btcAction = yield service_1.default.getBTCPrise(params);
     const existiongTimestamp = convertToTimestamp(btcAction.date);
+    console.log('btcAction', btcAction); // { price: 60001.11, date: '25 June 2024 at 17:40:08' }
+    console.log('existiongTimestamp', existiongTimestamp); // 1719326408000
+    const currentTime = Date.now();
+    const fiveMinutesInMillis = 0.5 * 60 * 1000;
+    if (currentTime - existiongTimestamp > fiveMinutesInMillis) {
+        try {
+            const prices = yield api.getPrices();
+            console.log('prices', prices.bitcoin);
+            yield (0, exports.updatePrices)(prices);
+            return true;
+        }
+        catch (e) {
+            console.error('ERROR in fetchPrices:', e);
+            return false;
+        }
+    }
+    else {
+        console.log('Less than 5 minutes have passed since the last timestamp.');
+        return false;
+    }
+    /*
+    try {
+      const prices: t.CurrentPrices = await api.getPrices();
+      console.log('prices', prices.bitcoin);
+      await updatePrices(prices);
+      return true;
+    } catch (e) {
+      console.error('ERROR in fetchPrices:', e);
+      return false;
+    }
+    */
+    // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
+    // const cachedTimestamp = cache.getCache(timestampKey) as number;
+    // const params = { model: ActionModel };
+    // const btcAction = await service.getBTCPrise(params);
+    // const existiongTimestamp = convertToTimestamp(btcAction.date);
     // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
-    const DELAY = 1 * 60 * 1000;
-    if (existiongTimestamp) {
-        const currentTime = Date.now();
-        const timeElapsed = currentTime - existiongTimestamp;
-        // console.log('currentTime', currentTime);
-        // console.log('existiongTimestamp', existiongTimestamp);
-        // console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
-        /*
+    // const DELAY = 1 * 60 * 1000;
+    // if (existiongTimestamp) {
+    // const currentTime = Date.now();
+    // const timeElapsed = currentTime - existiongTimestamp;
+    // console.log('currentTime', currentTime);
+    // console.log('existiongTimestamp', existiongTimestamp);
+    // console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
+    /*
+      try {
+        const prices: t.CurrentPrices = await api.getPrices();
+        console.log('prices', prices.bitcoin);
+        await updatePrices(prices);
+        return true;
+      } catch (e) {
+        console.error('ERROR in fetchPrices:', e);
+        return false;
+      }
+      // */
+    /*
+      if (timeElapsed < DELAY) {
+        console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
+        return false;
+      } else {
         try {
           const prices: t.CurrentPrices = await api.getPrices();
           console.log('prices', prices);
-          const isUpdated = await updatePrices(prices);
-          return isUpdated ? true : false;
+          await updatePrices(prices);
         } catch (e) {
           console.error('ERROR in fetchPrices:', e);
         }
-        // */
-        // /*
-        if (timeElapsed < DELAY) {
-            console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
-            return false;
-        }
-        else {
-            try {
-                const prices = yield api.getPrices();
-                console.log('prices', prices);
-                yield (0, exports.updatePrices)(prices);
-            }
-            catch (e) {
-                console.error('ERROR in fetchPrices:', e);
-            }
-            return true;
-        }
-        // */
-    }
+  
+        return true;
+      }
+      // */
+    // }
 });
 exports.fetchPrices = fetchPrices;
 const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () {
