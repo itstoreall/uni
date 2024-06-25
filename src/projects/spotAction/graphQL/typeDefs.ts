@@ -31,6 +31,7 @@ const typeDefs = gql`
   type ActionsRes {
     isUpdated: Boolean!
     actions: [Action]!
+    time: String!
   }
 
   """
