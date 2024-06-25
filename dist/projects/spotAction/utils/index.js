@@ -91,7 +91,7 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     const btcAction = yield service_1.default.getBTCPrise(params);
     const existiongTimestamp = convertToTimestamp(btcAction.date);
     // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
-    const DELAY = 5 * 60 * 1000;
+    const DELAY = 1 * 60 * 1000;
     if (existiongTimestamp) {
         const currentTime = Date.now();
         // console.log('currentTime', currentTime);
@@ -116,12 +116,12 @@ const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 const prices = yield api.getPrices();
                 // console.log('prices', prices);
-                const isUpdated = yield (0, exports.updatePrices)(prices);
-                return isUpdated ? true : false;
+                yield (0, exports.updatePrices)(prices);
             }
             catch (e) {
                 console.error('ERROR in fetchPrices:', e);
             }
+            return true;
         }
         // */
     }
@@ -252,7 +252,7 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
     // console.log('actionCount === actions.length', actionCount === actions.length);
     // console.log('=====>', actionCount, actions.length, actions[0]);
     // return actionCount === actions.length;
-    return true;
+    // return true;
 });
 exports.updatePrices = updatePrices;
 // ------ Actions:
