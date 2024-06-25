@@ -248,7 +248,8 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
     }
     // console.log('actionCount === actions.length', actionCount === actions.length);
     // console.log('=====>', actionCount, actions.length, actions[0]);
-    return actionCount === actions.length;
+    // return actionCount === actions.length;
+    return true;
 });
 exports.updatePrices = updatePrices;
 // ------ Actions:
