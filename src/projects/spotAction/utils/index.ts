@@ -12,7 +12,7 @@ const ActionModel = getModel(Project.SPOT_ACTION);
 
 // ------ General fns:
 
-const convertToTimestamp = (dateString: string) => {
+export const convertToTimestamp = (dateString: string) => {
   const [datePart, timePart] = dateString.split(' at ');
   const date = new Date(`${datePart} ${timePart}`); // ${timePart} GMT+0000`)
   const timestamp = date.getTime();
