@@ -35,13 +35,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeAction = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.updatePrices = exports.fetchPrices = exports.updateActions = void 0;
+exports.removeAction = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.updatePrices = exports.fetchPrices = exports.updateActions = exports.convertToTimestamp = void 0;
 const getIntlDate_1 = require("../../../utils/getIntlDate");
 const service_1 = __importDefault(require("../../../db/service"));
 const db_1 = require("../../../db");
 // import * as gu from '../../../utils/global';
 const projEnum = __importStar(require("../enum"));
-// import * as cache from '../cache';
 const api = __importStar(require("../api"));
 const winston_1 = __importDefault(require("../../../winston"));
 const { Project, Action, Status, Token, Symbol } = projEnum;
@@ -49,16 +48,15 @@ const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
 // ------ General fns:
 const convertToTimestamp = (dateString) => {
     const [datePart, timePart] = dateString.split(' at ');
-    const date = new Date(`${datePart} ${timePart}`);
-    // const date = new Date(`${datePart} ${timePart} GMT+0000`);
+    const date = new Date(`${datePart} ${timePart}`); // ${timePart} GMT+0000`)
     const timestamp = date.getTime();
     return timestamp;
 };
-// ------
+exports.convertToTimestamp = convertToTimestamp;
+// ------ Update :
 const updateActions = () => __awaiter(void 0, void 0, void 0, function* () {
     winston_1.default.fn('updateActions');
     const isUpdated = yield (0, exports.fetchPrices)();
-    console.log('updated ====>', isUpdated);
     /*
     const isUpdated = await updatePrices(prices);
     if (!isUpdated) return;
@@ -84,80 +82,21 @@ exports.updateActions = updateActions;
 const fetchPrices = () => __awaiter(void 0, void 0, void 0, function* () {
     winston_1.default.fn('fetchPrices');
     const params = { model: ActionModel };
-    const btcAction = yield service_1.default.getBTCPrise(params);
-    const existiongTimestamp = convertToTimestamp(btcAction.date);
-    console.log('btcAction', btcAction); // { price: 60001.11, date: '25 June 2024 at 17:40:08' }
-    console.log('existiongTimestamp', existiongTimestamp); // 1719326408000
-    const currentTime = Date.now();
-    const fiveMinutesInMillis = 0.5 * 60 * 1000;
-    if (currentTime - existiongTimestamp > fiveMinutesInMillis) {
-        try {
-            const prices = yield api.getPrices();
-            console.log('prices', prices.bitcoin);
+    const btc = yield service_1.default.getBTCPrise(params);
+    try {
+        const prices = yield api.getPrices();
+        // console.log('btc/prices', btc.price, prices.bitcoin.usd);
+        if (prices.bitcoin.usd !== btc.price) {
             yield (0, exports.updatePrices)(prices);
             return true;
         }
-        catch (e) {
-            console.error('ERROR in fetchPrices:', e);
+        else
             return false;
-        }
     }
-    else {
-        console.log('Less than 5 minutes have passed since the last timestamp.');
+    catch (e) {
+        winston_1.default.err(`ERROR in fetchPrices: ${e.message}`);
         return false;
     }
-    /*
-    try {
-      const prices: t.CurrentPrices = await api.getPrices();
-      console.log('prices', prices.bitcoin);
-      await updatePrices(prices);
-      return true;
-    } catch (e) {
-      console.error('ERROR in fetchPrices:', e);
-      return false;
-    }
-    */
-    // const cachedPrices = cache.getCache(pricesKey) as t.CurrentPrices; // *
-    // const cachedTimestamp = cache.getCache(timestampKey) as number;
-    // const params = { model: ActionModel };
-    // const btcAction = await service.getBTCPrise(params);
-    // const existiongTimestamp = convertToTimestamp(btcAction.date);
-    // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
-    // const DELAY = 1 * 60 * 1000;
-    // if (existiongTimestamp) {
-    // const currentTime = Date.now();
-    // const timeElapsed = currentTime - existiongTimestamp;
-    // console.log('currentTime', currentTime);
-    // console.log('existiongTimestamp', existiongTimestamp);
-    // console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
-    /*
-      try {
-        const prices: t.CurrentPrices = await api.getPrices();
-        console.log('prices', prices.bitcoin);
-        await updatePrices(prices);
-        return true;
-      } catch (e) {
-        console.error('ERROR in fetchPrices:', e);
-        return false;
-      }
-      // */
-    /*
-      if (timeElapsed < DELAY) {
-        console.log('<', timeElapsed, DELAY, timeElapsed < DELAY);
-        return false;
-      } else {
-        try {
-          const prices: t.CurrentPrices = await api.getPrices();
-          console.log('prices', prices);
-          await updatePrices(prices);
-        } catch (e) {
-          console.error('ERROR in fetchPrices:', e);
-        }
-  
-        return true;
-      }
-      // */
-    // }
 });
 exports.fetchPrices = fetchPrices;
 const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () {

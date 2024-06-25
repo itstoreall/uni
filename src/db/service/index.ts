@@ -27,7 +27,6 @@ const getByID = async ({ model, id }: IDArgs) => {
 const getBTCPrise = async ({ model }: ModelArg) => {
   const btc = await makeRequest(() => model.findOne({ token: Symbol.BTC }));
   return { price: btc.current_price, date: btc.updatedAt };
-  // return await makeRequest(() => model.find({ token: Token.BITCOIN }));
 };
 
 const getByStatus = async ({ model, status }: GetByStatusArgs) => {

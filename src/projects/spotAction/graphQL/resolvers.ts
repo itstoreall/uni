@@ -17,9 +17,8 @@ const resolvers = {
       const isUpdated = await u.updateActions();
       const actions = await u.getAllActions();
       const time = getIntlDate(dateConfig.format.time.label);
-      w[isUpdated ? 'info' : 'err'](
-        `updated: ${isUpdated} ${time} ${actions?.length}`
-      );
+      const msg = `updated: ${isUpdated} ${time} ${actions?.length}`;
+      w[isUpdated ? 'info' : 'err'](msg);
       return { isUpdated, actions, time };
     },
 

@@ -51,7 +51,8 @@ const resolvers = {
             const isUpdated = yield u.updateActions();
             const actions = yield u.getAllActions();
             const time = (0, getIntlDate_1.getIntlDate)(getIntlDate_1.dateConfig.format.time.label);
-            winston_1.default[isUpdated ? 'info' : 'err'](`updated: ${isUpdated} ${time} ${actions === null || actions === void 0 ? void 0 : actions.length}`);
+            const msg = `updated: ${isUpdated} ${time} ${actions === null || actions === void 0 ? void 0 : actions.length}`;
+            winston_1.default[isUpdated ? 'info' : 'err'](msg);
             return { isUpdated, actions, time };
         }),
         getActionByID: (_, args) => __awaiter(void 0, void 0, void 0, function* () {

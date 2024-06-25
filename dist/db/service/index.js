@@ -20,7 +20,6 @@ const getByID = (_b) => __awaiter(void 0, [_b], void 0, function* ({ model, id }
 const getBTCPrise = (_c) => __awaiter(void 0, [_c], void 0, function* ({ model }) {
     const btc = yield makeRequest(() => model.findOne({ token: enum_1.Symbol.BTC }));
     return { price: btc.current_price, date: btc.updatedAt };
-    // return await makeRequest(() => model.find({ token: Token.BITCOIN }));
 });
 const getByStatus = (_d) => __awaiter(void 0, [_d], void 0, function* ({ model, status }) {
     return yield makeRequest(() => model.find({ status }));
