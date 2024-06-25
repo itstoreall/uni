@@ -68,7 +68,7 @@ export const fetchPrices = async () => {
 
   // console.log('existiongTimestamp -->', existiongTimestamp); // 1716651001000
 
-  const DELAY = 5 * 60 * 1000;
+  const DELAY = 1 * 60 * 1000;
 
   if (existiongTimestamp) {
     const currentTime = Date.now();
@@ -97,11 +97,12 @@ export const fetchPrices = async () => {
       try {
         const prices: t.CurrentPrices = await api.getPrices();
         // console.log('prices', prices);
-        const isUpdated = await updatePrices(prices);
-        return isUpdated ? true : false;
+        await updatePrices(prices);
       } catch (e) {
         console.error('ERROR in fetchPrices:', e);
       }
+
+      return true;
     }
     // */
   }
@@ -241,7 +242,7 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
   // console.log('=====>', actionCount, actions.length, actions[0]);
 
   // return actionCount === actions.length;
-  return true;
+  // return true;
 };
 
 // ------ Actions:
