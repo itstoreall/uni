@@ -13,4 +13,8 @@ export type SpotAction = {
   status: Status;
 };
 
+export type IdArg = { id: string };
+export type InputArg = { input: SpotAction };
+export type IdInputArgs = IdArg & InputArg;
+
 export type SpotActionRes = Promise<SpotAction[]>;

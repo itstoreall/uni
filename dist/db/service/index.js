@@ -30,8 +30,9 @@ const existsByID = (_e) => __awaiter(void 0, [_e], void 0, function* ({ model, i
 const create = (_f) => __awaiter(void 0, [_f], void 0, function* ({ model, input }) {
     return yield makeRequest(() => model.create(input));
 });
-const updateByID = (_g) => __awaiter(void 0, [_g], void 0, function* ({ model, id: _id, input }) {
-    return yield makeRequest(() => model.updateOne({ _id }, Object.assign({}, input)));
+const updateByID = (_g) => __awaiter(void 0, [_g], void 0, function* ({ model, id, input }) {
+    console.log('id, input', id, input);
+    return yield makeRequest(() => model.updateOne({ _id: id }, Object.assign({}, input)));
 });
 const removeByID = (_h) => __awaiter(void 0, [_h], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.deleteOne({ _id: id }));

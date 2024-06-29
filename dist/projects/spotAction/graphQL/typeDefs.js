@@ -61,6 +61,7 @@ const typeDefs = (0, apollo_server_express_1.gql) `
 
   type Mutation {
     addAction(input: ActionInput!): Action!
+    updateAction(id: ID!, input: ActionInput!): ActionsRes!
   }
 `;
 exports.default = typeDefs;

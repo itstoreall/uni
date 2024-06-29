@@ -70,6 +70,15 @@ const resolvers = {
             const addedAction = yield service_1.default.create(params);
             console.log('addedAction:', addedAction);
             return addedAction;
+        }),
+        updateAction: (_2, _b) => __awaiter(void 0, [_2, _b], void 0, function* (_, { id, input }) {
+            winston_1.default.fn(`updateAction`);
+            const isUpdated = yield u.updateActionById(id, input);
+            const actions = yield u.getAllActions();
+            const time = (0, getIntlDate_1.getIntlDate)(getIntlDate_1.dateConfig.format.time.label);
+            const msg = `updated: ${isUpdated} ${time} ${actions === null || actions === void 0 ? void 0 : actions.length}`;
+            winston_1.default[isUpdated ? 'info' : 'err'](msg);
+            return { isUpdated, actions, time };
         })
         /*
         updateUser: async (_: any, args: { id: string; input: t.UserInput }) => {
