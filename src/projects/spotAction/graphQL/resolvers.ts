@@ -22,7 +22,7 @@ const resolvers = {
       return { isUpdated, actions, time };
     },
 
-    getActionByID: async (_: any, args: { id: string }) => {
+    getActionByID: async (_: any, args: t.IdArg) => {
       const params = { model: ActionModel, id: args.id };
       return await service.getByID(params);
     },
@@ -33,12 +33,22 @@ const resolvers = {
   },
 
   Mutation: {
-    addAction: async (_: any, { input }: { input: t.SpotAction }) => {
+    addAction: async (_: any, { input }: t.InputArg) => {
       console.log('input ->', input);
       const params = { model: ActionModel, input };
       const addedAction = await service.create(params);
       console.log('addedAction:', addedAction);
       return addedAction as t.SpotAction;
+    },
+
+    updateAction: async (_: any, { id, input }: t.IdInputArgs) => {
+      w.fn(`updateAction`);
+      const isUpdated = await u.updateActionById(id, input);
+      const actions = await u.getAllActions();
+      const time = getIntlDate(dateConfig.format.time.label);
+      const msg = `updated: ${isUpdated} ${time} ${actions?.length}`;
+      w[isUpdated ? 'info' : 'err'](msg);
+      return { isUpdated, actions, time };
     }
 
     /*

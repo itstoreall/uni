@@ -250,7 +250,12 @@ export const createAction = async (args: CreateActionArgs) => {
 
   const params = { model: ActionModel, input: actionInput };
   return await service.create(params);
-  return 0;
+  // return 0;
+};
+
+export const updateActionById = async (id: string, input: t.SpotAction) => {
+  const params = { model: ActionModel, id, input };
+  return Boolean((await service.updateByID(params)).modifiedCount);
 };
 
 export const removeAction = async () => {

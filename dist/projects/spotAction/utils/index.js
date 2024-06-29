@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeAction = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.updatePrices = exports.fetchPrices = exports.updateActions = exports.convertToTimestamp = void 0;
+exports.removeAction = exports.updateActionById = exports.createAction = exports.existsByID = exports.getByStatus = exports.getAllActions = exports.updatePrices = exports.fetchPrices = exports.updateActions = exports.convertToTimestamp = void 0;
 const getIntlDate_1 = require("../../../utils/getIntlDate");
 const service_1 = __importDefault(require("../../../db/service"));
 const db_1 = require("../../../db");
@@ -266,9 +266,14 @@ const createAction = (args) => __awaiter(void 0, void 0, void 0, function* () {
     };
     const params = { model: ActionModel, input: actionInput };
     return yield service_1.default.create(params);
-    return 0;
+    // return 0;
 });
 exports.createAction = createAction;
+const updateActionById = (id, input) => __awaiter(void 0, void 0, void 0, function* () {
+    const params = { model: ActionModel, id, input };
+    return Boolean((yield service_1.default.updateByID(params)).modifiedCount);
+});
+exports.updateActionById = updateActionById;
 const removeAction = () => __awaiter(void 0, void 0, void 0, function* () {
     const params = { model: ActionModel, id: '664b8e13a1d72b0f6e7ab2b7' };
     return (yield service_1.default.removeByID(params)).deletedCount; // 0 or 1
