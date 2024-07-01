@@ -171,8 +171,9 @@ export const updatePrices = async (prices: t.CurrentPrices) => {
   // let actionCount: number = 0;
 
   const calculatePercentage = (action: t.SpotAction, price: number) => {
+    // let rawPercent = 0;
     const rawPercent = action.average_price
-      ? (price / action.average_price) * 100
+      ? ((price - action.average_price) / action.average_price) * 100
       : 0;
 
     const fixedValue = rawPercent.toFixed();

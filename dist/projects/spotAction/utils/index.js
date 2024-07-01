@@ -200,8 +200,9 @@ const updatePrices = (prices) => __awaiter(void 0, void 0, void 0, function* () 
     };
     // let actionCount: number = 0;
     const calculatePercentage = (action, price) => {
+        // let rawPercent = 0;
         const rawPercent = action.average_price
-            ? (price / action.average_price) * 100
+            ? ((price - action.average_price) / action.average_price) * 100
             : 0;
         const fixedValue = rawPercent.toFixed();
         const numberValue = Number(fixedValue);
