@@ -1,3 +1,6 @@
+========================
+Spot Actions
+
 ------ Add token (projects/spotAction/):
 
 1. Add token to enum: Token and Symbol (enum)
@@ -5,4 +8,8 @@
 3. Add new token to the priceMap (utils/index.ts/updatePrice)
 4. Add new token to the mock object (api/index.ts/getPrices)
 
------- 
+========================
+Bot
+
+https://youtu.be/q-AFR0D7Vuw?si=rt9tVdEdh-o7HJMl
+

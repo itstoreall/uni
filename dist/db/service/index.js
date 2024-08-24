@@ -14,27 +14,27 @@ const enum_1 = require("../../projects/spotAction/enum");
 const getAll = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
     return yield makeRequest(() => model.find({}));
 });
-const getByID = (_b) => __awaiter(void 0, [_b], void 0, function* ({ model, id }) {
+const getByID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.findById(id));
 });
-const getBTCPrise = (_c) => __awaiter(void 0, [_c], void 0, function* ({ model }) {
+const getBTCPrise = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
     const btc = yield makeRequest(() => model.findOne({ token: enum_1.Symbol.BTC }));
     return { price: btc.current_price, date: btc.updatedAt };
 });
-const getByStatus = (_d) => __awaiter(void 0, [_d], void 0, function* ({ model, status }) {
+const getByStatus = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, status }) {
     return yield makeRequest(() => model.find({ status }));
 });
-const existsByID = (_e) => __awaiter(void 0, [_e], void 0, function* ({ model, id }) {
+const existsByID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.exists({ _id: id }));
 });
-const create = (_f) => __awaiter(void 0, [_f], void 0, function* ({ model, input }) {
+const create = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, input }) {
     return yield makeRequest(() => model.create(input));
 });
-const updateByID = (_g) => __awaiter(void 0, [_g], void 0, function* ({ model, id, input }) {
+const updateByID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, id, input }) {
     console.log('id, input', id, input);
     return yield makeRequest(() => model.updateOne({ _id: id }, Object.assign({}, input)));
 });
-const removeByID = (_h) => __awaiter(void 0, [_h], void 0, function* ({ model, id }) {
+const removeByID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.deleteOne({ _id: id }));
 });
 const makeRequest = (cb) => __awaiter(void 0, void 0, void 0, function* () {

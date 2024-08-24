@@ -71,7 +71,7 @@ const resolvers = {
             console.log('addedAction:', addedAction);
             return addedAction;
         }),
-        updateAction: (_2, _b) => __awaiter(void 0, [_2, _b], void 0, function* (_, { id, input }) {
+        updateAction: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { id, input }) {
             winston_1.default.fn(`updateAction`);
             const isUpdated = yield u.updateActionById(id, input);
             const actions = yield u.getAllActions();
