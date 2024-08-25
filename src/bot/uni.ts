@@ -1,10 +1,10 @@
 import { Bot, BotError, Context, GrammyError, HttpError } from 'grammy';
 import w from '../winston';
 
-const bot = () => {
+const uniBot = () => {
   w.fn('bot');
 
-  const bot = new Bot(process.env.BOT_API_KEY);
+  const bot = new Bot(process.env.UNI_BOT_API_KEY);
 
   bot.api.setMyCommands([{ command: 'info', description: 'Info' }]);
 
@@ -64,4 +64,4 @@ const errorHandler = (e: BotError<Context>) => {
   }
 };
 
-export default bot;
+export default uniBot;

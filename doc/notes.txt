@@ -9,7 +9,4 @@ Spot Actions
 4. Add new token to the mock object (api/index.ts/getPrices)
 
 ========================
-Bot
-
-https://youtu.be/q-AFR0D7Vuw?si=rt9tVdEdh-o7HJMl
 

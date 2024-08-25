@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const grammy_1 = require("grammy");
 const winston_1 = __importDefault(require("../winston"));
-const bot = () => {
+const uniBot = () => {
     winston_1.default.fn('bot');
-    const bot = new grammy_1.Bot(process.env.BOT_API_KEY);
+    const bot = new grammy_1.Bot(process.env.UNI_BOT_API_KEY);
     bot.api.setMyCommands([{ command: 'info', description: 'Info' }]);
     /*
     bot.command(['say_hi', 'hello', 'hi'], async ctx => {
@@ -65,5 +65,5 @@ const errorHandler = (e) => {
             break;
     }
 };
-exports.default = bot;
-//# sourceMappingURL=index.js.map
+exports.default = uniBot;
+//# sourceMappingURL=uni.js.map

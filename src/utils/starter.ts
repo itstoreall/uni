@@ -1,7 +1,7 @@
 import os from 'os';
 import mongoose from 'mongoose';
 import w from '../winston';
-import bot from '../bot';
+import trishaBot from '../bot/trisha';
 import * as spotActionUtils from '../projects/spotAction/utils';
 import * as gc from '../config/global';
 import * as gt from '../types/global';
@@ -22,7 +22,7 @@ const dbCheck = (mongoose: any) => {
 
 const starter: gt.RunServer = async port => {
   w.fn('starter');
-  bot();
+  trishaBot();
   spotActionUtils.updateActions();
   const dbName = dbCheck(mongoose).db;
   w.info(`  uni ${gu.isLocal() ? dev : prod}:${port} -> ${dbName} `);
