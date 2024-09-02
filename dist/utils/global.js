@@ -36,18 +36,15 @@ const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
 exports.isLocal = isLocal;
 // ------ cors:
 const corsCheck = (token) => {
-    console.log('token ==>', token);
     return corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(token);
 };
 exports.corsCheck = corsCheck;
 // ------ App (Express):
 const initApp = (args) => {
-    var _a;
-    console.log('args.req.headers ==>', args.req);
-    const { origin, authorization } = args.req.headers;
-    return !(0, exports.corsCheck)((_a = origin !== null && origin !== void 0 ? origin : authorization.split('Bearer ')[1]) !== null && _a !== void 0 ? _a : '')
-        ? args.res.status(403).send(`uni ${kaomoji} server`)
-        : args.next();
+    !(0, exports.corsCheck)(args.req.headers.origin)
+        ? args.res.status(403).send(`uni ${kaomoji} server (forbidden)`)
+        : args.res.status(200).send(`uni ${kaomoji} server (available)`);
+    return args.next();
 };
 exports.initApp = initApp;
 //# sourceMappingURL=global.js.map

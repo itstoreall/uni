@@ -12,16 +12,14 @@ export const isLocal = () => os.hostname().split('.').pop() === 'local';
 // ------ cors:
 
 export const corsCheck = (token: string) => {
-  console.log('token ==>', token);
   return corsOrigin?.split(',').includes(token);
 };
 
 // ------ App (Express):
 
 export const initApp = (args: gt.ReqArgs) => {
-  console.log('args.req.headers ==>', args.req);
-  const { origin, authorization } = args.req.headers;
-  return !corsCheck(origin ?? authorization.split('Bearer ')[1] ?? '')
-    ? args.res.status(403).send(`uni ${kaomoji} server`)
-    : args.next();
+  !corsCheck(args.req.headers.origin!)
+    ? args.res.status(403).send(`uni ${kaomoji} server (forbidden)`)
+    : args.res.status(200).send(`uni ${kaomoji} server (available)`);
+  return args.next();
 };
