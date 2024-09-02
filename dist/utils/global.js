@@ -35,11 +35,16 @@ const { kaomoji } = gc.system;
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
 exports.isLocal = isLocal;
 // ------ cors:
-const corsCheck = (origin) => corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(origin);
+const corsCheck = (token) => {
+    console.log('token ==>', token);
+    return corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(token);
+};
 exports.corsCheck = corsCheck;
 // ------ App (Express):
 const initApp = (args) => {
-    return !(0, exports.corsCheck)(args.req.headers.origin)
+    console.log('args.req.headers ==>', args.req.headers);
+    const { origin, authorization } = args.req.headers;
+    return !(0, exports.corsCheck)(origin !== null && origin !== void 0 ? origin : authorization.split('Bearer ')[1])
         ? args.res.status(403).send(`uni ${kaomoji} server`)
         : args.next();
 };

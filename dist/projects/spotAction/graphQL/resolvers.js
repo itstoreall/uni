@@ -35,15 +35,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import * as ge from '../enum/global';
 const service_1 = __importDefault(require("../../../db/service"));
 const db_1 = require("../../../db");
-const spotEnum = __importStar(require("../enum"));
+const getIntlDate_1 = require("../../../utils/getIntlDate");
+const ge = __importStar(require("../../../enum/global"));
 const u = __importStar(require("../utils"));
 const winston_1 = __importDefault(require("../../../winston"));
-const getIntlDate_1 = require("../../../utils/getIntlDate");
-const { Project } = spotEnum;
-const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
+const ActionModel = (0, db_1.getModel)(ge.Project.SPOT_ACTION);
 const resolvers = {
     Query: {
         getActions: () => __awaiter(void 0, void 0, void 0, function* () {

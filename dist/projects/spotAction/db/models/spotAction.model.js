@@ -28,7 +28,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const spotEnum = __importStar(require("../../enum"));
-const { Project } = spotEnum;
+const ge = __importStar(require("../../../../enum/global"));
 const { String, Number } = mongoose_1.default.Schema.Types;
 const required = (ts, rest) => {
     return Object.assign({ type: ts, required: true }, rest);
@@ -51,5 +51,5 @@ const spotSchema = new mongoose_1.default.Schema({
     createdAt: required(Date, setDate(true, Date.now())),
     updatedAt: required(String)
 });
-exports.default = mongoose_1.default.model(Project.SPOT_ACTION, spotSchema);
+exports.default = mongoose_1.default.model(ge.Project.SPOT_ACTION, spotSchema);
 //# sourceMappingURL=spotAction.model.js.map

@@ -1,14 +1,14 @@
 import { getIntlDate } from '../../../utils/getIntlDate';
 import service from '../../../db/service';
 import { getModel } from '../../../db';
-// import * as gu from '../../../utils/global';
+import * as ge from '../../../enum/global';
 import * as projEnum from '../enum';
 import * as api from '../api';
 import * as t from '../types';
 import w from '../../../winston';
 
-const { Project, Action, Status, Token, Symbol } = projEnum;
-const ActionModel = getModel(Project.SPOT_ACTION);
+const { Action, Status, Token, Symbol } = projEnum;
+const ActionModel = getModel(ge.Project.SPOT_ACTION);
 
 // ------ General fns:
 

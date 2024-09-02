@@ -1,9 +1,10 @@
+import * as ge from '../../../enum/global';
 import * as projEnum from '../enum';
 
-const { Project, Token } = projEnum;
+const { Token } = projEnum;
 
 export const spotAction = {
-  label: Project.SPOT_ACTION
+  label: ge.Project.SPOT_ACTION
 };
 
 const tokens = Object.values(Token).join(',');

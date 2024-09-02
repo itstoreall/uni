@@ -1,7 +1,3 @@
-export enum Project {
-  SPOT_ACTION = 'spot_action'
-}
-
 export enum Action {
   INIT = 'init',
   BUY = 'buy',

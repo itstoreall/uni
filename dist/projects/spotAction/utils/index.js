@@ -39,12 +39,12 @@ exports.removeAction = exports.updateActionById = exports.createAction = exports
 const getIntlDate_1 = require("../../../utils/getIntlDate");
 const service_1 = __importDefault(require("../../../db/service"));
 const db_1 = require("../../../db");
-// import * as gu from '../../../utils/global';
+const ge = __importStar(require("../../../enum/global"));
 const projEnum = __importStar(require("../enum"));
 const api = __importStar(require("../api"));
 const winston_1 = __importDefault(require("../../../winston"));
-const { Project, Action, Status, Token, Symbol } = projEnum;
-const ActionModel = (0, db_1.getModel)(Project.SPOT_ACTION);
+const { Action, Status, Token, Symbol } = projEnum;
+const ActionModel = (0, db_1.getModel)(ge.Project.SPOT_ACTION);
 // ------ General fns:
 const convertToTimestamp = (dateString) => {
     const [datePart, timePart] = dateString.split(' at ');

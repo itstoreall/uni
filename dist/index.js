@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -33,16 +42,34 @@ const starter_1 = __importDefault(require("./utils/starter"));
 const gu = __importStar(require("./utils/global"));
 const global_1 = __importDefault(require("./graphQL/global"));
 const routes_1 = __importDefault(require("./routes"));
+const winston_1 = __importDefault(require("./winston"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4001;
 app.use((req, res, next) => gu.initApp({ req, res, next }));
 app.use('/api', (_, __, next) => next(0), routes_1.default);
 const server = (0, http_1.createServer)(app);
 const apollo = new apollo_server_express_1.ApolloServer(Object.assign({}, global_1.default));
-apollo.start().then(() => apollo.applyMiddleware({ app, path: '/graphql' }));
-server.listen({ port }, () => (0, starter_1.default)(String(port)));
+const startApolloServer = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield apollo.start();
+        apollo.applyMiddleware({ app, path: '/graphql' });
+        server.listen({ port }, () => (0, starter_1.default)(String(port)));
+    }
+    catch (e) {
+        winston_1.default.err(`ERRIR in startApolloServer: ${e}`);
+    }
+});
+startApolloServer();
+// ---
 app.use((e, _, res, __) => {
+    winston_1.default.err(`ERROR: ${e}`);
     const msg = e.message || 'Internal Server Error';
     return res.status(500).json({ error: msg });
+});
+process.on('unhandledRejection', (reason, promise) => {
+    winston_1.default.err(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+});
+process.on('uncaughtException', e => {
+    winston_1.default.err(`Uncaught Exception: ${e}`);
 });
 //# sourceMappingURL=index.js.map

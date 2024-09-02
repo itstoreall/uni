@@ -1,10 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Symbol = exports.Token = exports.Status = exports.Action = exports.Project = void 0;
-var Project;
-(function (Project) {
-    Project["SPOT_ACTION"] = "spot_action";
-})(Project || (exports.Project = Project = {}));
+exports.Symbol = exports.Token = exports.Status = exports.Action = void 0;
 var Action;
 (function (Action) {
     Action["INIT"] = "init";

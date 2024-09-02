@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import * as spotEnum from '../../enum';
+import * as ge from '../../../../enum/global';
 import { SchemaType } from '../types';
 
-const { Project } = spotEnum;
 const { String, Number } = mongoose.Schema.Types;
 
 const required = (ts: SchemaType, rest?: {}) => {
@@ -30,4 +30,4 @@ const spotSchema = new mongoose.Schema({
   updatedAt: required(String)
 });
 
-export default mongoose.model(Project.SPOT_ACTION, spotSchema);
+export default mongoose.model(ge.Project.SPOT_ACTION, spotSchema);

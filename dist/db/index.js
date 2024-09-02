@@ -28,14 +28,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getModel = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const spotEnum = __importStar(require("../projects/spotAction/enum"));
+const ge = __importStar(require("../enum/global"));
 const models_1 = __importDefault(require("./models"));
 require('dotenv').config();
-const { Project } = spotEnum;
 mongoose_1.default.connect(process.env.MONGO_DB, {});
 const getModel = (label) => {
     switch (label) {
-        case Project.SPOT_ACTION:
+        case ge.Project.SPOT_ACTION:
             return models_1.default.SpotAction;
         default:
             return null;

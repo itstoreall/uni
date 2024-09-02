@@ -24,10 +24,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.url = exports.coingeckoBaseURL = exports.spotAction = void 0;
+const ge = __importStar(require("../../../enum/global"));
 const projEnum = __importStar(require("../enum"));
-const { Project, Token } = projEnum;
+const { Token } = projEnum;
 exports.spotAction = {
-    label: Project.SPOT_ACTION
+    label: ge.Project.SPOT_ACTION
 };
 const tokens = Object.values(Token).join(',');
 exports.coingeckoBaseURL = 'https://api.coingecko.com/api/v3/';

@@ -1,14 +1,12 @@
-// import * as ge from '../enum/global';
 import service from '../../../db/service';
 import { getModel } from '../../../db';
-import * as spotEnum from '../enum';
+import { dateConfig, getIntlDate } from '../../../utils/getIntlDate';
+import * as ge from '../../../enum/global';
 import * as t from '../types';
 import * as u from '../utils';
 import w from '../../../winston';
-import { dateConfig, getIntlDate } from '../../../utils/getIntlDate';
 
-const { Project } = spotEnum;
-const ActionModel = getModel(Project.SPOT_ACTION);
+const ActionModel = getModel(ge.Project.SPOT_ACTION);
 
 const resolvers = {
   Query: {
