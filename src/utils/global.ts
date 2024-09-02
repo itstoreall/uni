@@ -19,9 +19,9 @@ export const corsCheck = (token: string) => {
 // ------ App (Express):
 
 export const initApp = (args: gt.ReqArgs) => {
-  console.log('args.req.headers ==>', args.req.headers);
+  console.log('args.req.headers ==>', args.req);
   const { origin, authorization } = args.req.headers;
-  return !corsCheck(origin ?? authorization.split('Bearer ')[1])
+  return !corsCheck(origin ?? authorization.split('Bearer ')[1] ?? '')
     ? args.res.status(403).send(`uni ${kaomoji} server`)
     : args.next();
 };

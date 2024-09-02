@@ -42,9 +42,10 @@ const corsCheck = (token) => {
 exports.corsCheck = corsCheck;
 // ------ App (Express):
 const initApp = (args) => {
-    console.log('args.req.headers ==>', args.req.headers);
+    var _a;
+    console.log('args.req.headers ==>', args.req);
     const { origin, authorization } = args.req.headers;
-    return !(0, exports.corsCheck)(origin !== null && origin !== void 0 ? origin : authorization.split('Bearer ')[1])
+    return !(0, exports.corsCheck)((_a = origin !== null && origin !== void 0 ? origin : authorization.split('Bearer ')[1]) !== null && _a !== void 0 ? _a : '')
         ? args.res.status(403).send(`uni ${kaomoji} server`)
         : args.next();
 };
