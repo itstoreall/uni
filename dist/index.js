@@ -43,10 +43,10 @@ const gc = __importStar(require("./config/global"));
 const global_1 = __importDefault(require("./graphQL/global"));
 const routes_1 = __importDefault(require("./routes"));
 const winston_1 = __importDefault(require("./winston"));
-const { kaomoji } = gc.system;
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4001;
-app.use('/api', (_, res) => res.send(kaomoji), routes_1.default);
+app.use('/api', (_, __, next) => next(0), routes_1.default);
+app.get('/', (_, res) => res.status(200).send(gc.system.kaomoji));
 const server = (0, http_1.createServer)(app);
 const apollo = new apollo_server_express_1.ApolloServer(Object.assign({}, global_1.default));
 const startApolloServer = () => __awaiter(void 0, void 0, void 0, function* () {

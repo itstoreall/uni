@@ -8,12 +8,11 @@ import gGql from './graphQL/global';
 import routes from './routes';
 import w from './winston';
 
-const { kaomoji } = gc.system;
-
 const app: ex.Express = ex();
 const port = process.env.PORT || 4001;
 
-app.use('/api', (_, res) => res.send(kaomoji), routes);
+app.use('/api', (_, __, next) => next(0), routes);
+app.get('/', (_, res) => res.status(200).send(gc.system.kaomoji));
 
 const server: gt.HttpServer = createServer(app);
 const apollo = new ApolloServer({ ...gGql });
