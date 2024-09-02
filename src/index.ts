@@ -11,7 +11,7 @@ import w from './winston';
 const app: ex.Express = ex();
 const port = process.env.PORT || 4001;
 
-app.use((req, res, next) => gu.initApp({ req, res, next }));
+app.use((_, __, next) => next(0));
 app.use('/api', (_, __, next) => next(0), routes);
 
 const server: gt.HttpServer = createServer(app);

@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initApp = exports.corsCheck = exports.isLocal = void 0;
+exports.isLocal = void 0;
 const os_1 = __importDefault(require("os"));
 const gc = __importStar(require("../config/global"));
 const corsOrigin = process.env.CORS_ORIGIN;
@@ -34,17 +34,20 @@ const { kaomoji } = gc.system;
 // ------ is:
 const isLocal = () => os_1.default.hostname().split('.').pop() === 'local';
 exports.isLocal = isLocal;
+/*
 // ------ cors:
-const corsCheck = (token) => {
-    return corsOrigin === null || corsOrigin === void 0 ? void 0 : corsOrigin.split(',').includes(token);
+
+export const corsCheck = (token: string) => {
+  return corsOrigin?.split(',').includes(token);
 };
-exports.corsCheck = corsCheck;
+
 // ------ App (Express):
-const initApp = (args) => {
-    !(0, exports.corsCheck)(args.req.headers.origin)
-        ? args.res.status(403).send(`uni ${kaomoji} server (forbidden)`)
-        : args.res.status(200).send(`uni ${kaomoji} server (available)`);
-    return args.next();
+
+export const initApp = (args: gt.ReqArgs) => {
+  // !corsCheck(args.req.headers.origin!)
+  //   ? args.res.status(403).send(`uni ${kaomoji} server (forbidden)`)
+  //   : args.res.status(200).send(`uni ${kaomoji} server (available)`);
+  return args.next();
 };
-exports.initApp = initApp;
+*/
 //# sourceMappingURL=global.js.map

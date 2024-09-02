@@ -9,6 +9,7 @@ const { kaomoji } = gc.system;
 
 export const isLocal = () => os.hostname().split('.').pop() === 'local';
 
+/*
 // ------ cors:
 
 export const corsCheck = (token: string) => {
@@ -18,8 +19,9 @@ export const corsCheck = (token: string) => {
 // ------ App (Express):
 
 export const initApp = (args: gt.ReqArgs) => {
-  !corsCheck(args.req.headers.origin!)
-    ? args.res.status(403).send(`uni ${kaomoji} server (forbidden)`)
-    : args.res.status(200).send(`uni ${kaomoji} server (available)`);
+  // !corsCheck(args.req.headers.origin!)
+  //   ? args.res.status(403).send(`uni ${kaomoji} server (forbidden)`)
+  //   : args.res.status(200).send(`uni ${kaomoji} server (available)`);
   return args.next();
 };
+*/
