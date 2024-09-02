@@ -2,17 +2,18 @@ import { ApolloServer } from 'apollo-server-express';
 import ex from 'express';
 import { createServer } from 'http';
 import starter from './utils/starter';
+import * as gc from './config/global';
 import * as gt from './types/global';
-import * as gu from './utils/global';
 import gGql from './graphQL/global';
 import routes from './routes';
 import w from './winston';
 
+const { kaomoji } = gc.system;
+
 const app: ex.Express = ex();
 const port = process.env.PORT || 4001;
 
-app.use((_, __, next) => next(0));
-app.use('/api', (_, __, next) => next(0), routes);
+app.use('/api', (_, res) => res.send(kaomoji), routes);
 
 const server: gt.HttpServer = createServer(app);
 const apollo = new ApolloServer({ ...gGql });

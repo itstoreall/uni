@@ -1,9 +1,9 @@
 import os from 'os';
-import * as gc from '../config/global';
-import * as gt from '../types/global';
+// import * as gc from '../config/global';
+// import * as gt from '../types/global';
 
-const corsOrigin = process.env.CORS_ORIGIN;
-const { kaomoji } = gc.system;
+// const corsOrigin = process.env.CORS_ORIGIN;
+// const { kaomoji } = gc.system;
 
 // ------ is:
 
