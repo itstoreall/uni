@@ -14,6 +14,7 @@ export type SpotAction = {
 };
 
 export type IdArg = { id: string };
+export type SymbolArg = { symbol: string };
 export type InputArg = { input: SpotAction };
 export type IdInputArgs = IdArg & InputArg;
 

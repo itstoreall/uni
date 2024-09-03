@@ -42,7 +42,6 @@ const create = async ({ model, input }: CreateArgs) => {
 };
 
 const updateByID = async ({ model, id, input }: UpdateArgs) => {
-  console.log('id, input', id, input);
   return await makeRequest(() => model.updateOne({ _id: id }, { ...input }));
 };
 

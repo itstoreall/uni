@@ -57,6 +57,13 @@ const resolvers = {
             const params = { model: ActionModel, id: args.id };
             return yield service_1.default.getByID(params);
         }),
+        getActionBySymbol: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const actions = yield u.getAllActions();
+            console.log('args', args);
+            console.log('33333', actions);
+            const params = { model: ActionModel, id: '6653626081d376d08f4c63e2' };
+            return yield service_1.default.getByID(params);
+        }),
         getUser: (_, args) => {
             return `User ${args.id}`;
         }
@@ -69,7 +76,7 @@ const resolvers = {
             console.log('addedAction:', addedAction);
             return addedAction;
         }),
-        updateAction: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { id, input }) {
+        updateActionById: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { id, input }) {
             winston_1.default.fn(`updateAction`);
             const isUpdated = yield u.updateActionById(id, input);
             const actions = yield u.getAllActions();
@@ -78,6 +85,17 @@ const resolvers = {
             winston_1.default[isUpdated ? 'info' : 'err'](msg);
             return { isUpdated, actions, time };
         })
+        /*
+        updateActionBySymbol: async (_: any, { id, input }: t.IdInputArgs) => {
+          w.fn(`updateAction`);
+          const isUpdated = await u.updateActionById(id, input);
+          const actions = await u.getAllActions();
+          const time = getIntlDate(dateConfig.format.time.label);
+          const msg = `updated: ${isUpdated} ${time} ${actions?.length}`;
+          w[isUpdated ? 'info' : 'err'](msg);
+          return { isUpdated, actions, time };
+        }
+        */
         /*
         updateUser: async (_: any, args: { id: string; input: t.UserInput }) => {
           // Assuming you have a service method to update a user and it returns the updated user

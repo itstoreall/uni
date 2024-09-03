@@ -25,6 +25,14 @@ const resolvers = {
       return await service.getByID(params);
     },
 
+    getActionBySymbol: async (_: any, args: t.SymbolArg) => {
+      const actions = await u.getAllActions();
+      console.log('args', args);
+      console.log('33333', actions);
+      const params = { model: ActionModel, id: '6653626081d376d08f4c63e2' };
+      return await service.getByID(params);
+    },
+
     getUser: (_: any, args: any) => {
       return `User ${args.id}`;
     }
@@ -39,7 +47,7 @@ const resolvers = {
       return addedAction as t.SpotAction;
     },
 
-    updateAction: async (_: any, { id, input }: t.IdInputArgs) => {
+    updateActionById: async (_: any, { id, input }: t.IdInputArgs) => {
       w.fn(`updateAction`);
       const isUpdated = await u.updateActionById(id, input);
       const actions = await u.getAllActions();
@@ -48,6 +56,18 @@ const resolvers = {
       w[isUpdated ? 'info' : 'err'](msg);
       return { isUpdated, actions, time };
     }
+
+    /*
+    updateActionBySymbol: async (_: any, { id, input }: t.IdInputArgs) => {
+      w.fn(`updateAction`);
+      const isUpdated = await u.updateActionById(id, input);
+      const actions = await u.getAllActions();
+      const time = getIntlDate(dateConfig.format.time.label);
+      const msg = `updated: ${isUpdated} ${time} ${actions?.length}`;
+      w[isUpdated ? 'info' : 'err'](msg);
+      return { isUpdated, actions, time };
+    }
+    */
 
     /*
     updateUser: async (_: any, args: { id: string; input: t.UserInput }) => {

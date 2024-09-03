@@ -31,7 +31,6 @@ const create = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, input
     return yield makeRequest(() => model.create(input));
 });
 const updateByID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, id, input }) {
-    console.log('id, input', id, input);
     return yield makeRequest(() => model.updateOne({ _id: id }, Object.assign({}, input)));
 });
 const removeByID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, id }) {

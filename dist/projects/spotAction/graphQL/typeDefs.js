@@ -57,11 +57,13 @@ const typeDefs = (0, apollo_server_express_1.gql) `
     getUser(id: ID!): String
     getActions: ActionsRes!
     getActionByID(id: ID!): Action!
+    getActionBySymbol(symbol: String!): Action!
   }
 
   type Mutation {
     addAction(input: ActionInput!): Action!
-    updateAction(id: ID!, input: ActionInput!): ActionsRes!
+    updateActionById(id: ID!, input: ActionInput!): ActionsRes!
+    # updateActionBySymbol(symbol: String!, input: ActionInput!): ActionsRes!
   }
 `;
 exports.default = typeDefs;
