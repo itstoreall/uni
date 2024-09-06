@@ -10,6 +10,8 @@ export type CreateArgs = ModelArg & { input: t.SpotAction };
 
 export type IDArgs = ModelArg & { id: string };
 
+export type SymbolArgs = ModelArg & { symbol: string };
+
 export type UpdateArgs = IDArgs & { input: t.SpotAction | t.SpotAction[] };
 
 export type MakeRequest = <T>(cb: () => Promise<T>) => Promise<T>;
@@ -22,6 +24,10 @@ const getAll = async ({ model }: ModelArg) => {
 
 const getByID = async ({ model, id }: IDArgs) => {
   return await makeRequest(() => model.findById(id));
+};
+
+const getBySymbol = async ({ model, symbol }: SymbolArgs) => {
+  return await makeRequest(() => model.findOne({ token: symbol }));
 };
 
 const getBTCPrise = async ({ model }: ModelArg) => {
@@ -60,6 +66,7 @@ const makeRequest: MakeRequest = async cb => {
 export default {
   getAll,
   getByID,
+  getBySymbol,
   getBTCPrise,
   getByStatus,
   existsByID,

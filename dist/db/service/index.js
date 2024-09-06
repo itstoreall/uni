@@ -17,6 +17,9 @@ const getAll = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
 const getByID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, id }) {
     return yield makeRequest(() => model.findById(id));
 });
+const getBySymbol = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model, symbol }) {
+    return yield makeRequest(() => model.findOne({ token: symbol }));
+});
 const getBTCPrise = (_a) => __awaiter(void 0, [_a], void 0, function* ({ model }) {
     const btc = yield makeRequest(() => model.findOne({ token: enum_1.Symbol.BTC }));
     return { price: btc.current_price, date: btc.updatedAt };
@@ -47,6 +50,7 @@ const makeRequest = (cb) => __awaiter(void 0, void 0, void 0, function* () {
 exports.default = {
     getAll,
     getByID,
+    getBySymbol,
     getBTCPrise,
     getByStatus,
     existsByID,

@@ -58,11 +58,8 @@ const resolvers = {
             return yield service_1.default.getByID(params);
         }),
         getActionBySymbol: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            const actions = yield u.getAllActions();
-            console.log('args', args);
-            console.log('33333', actions);
-            const params = { model: ActionModel, id: '6653626081d376d08f4c63e2' };
-            return yield service_1.default.getByID(params);
+            const params = { model: ActionModel, symbol: args.symbol };
+            return yield service_1.default.getBySymbol(params);
         }),
         getUser: (_, args) => {
             return `User ${args.id}`;

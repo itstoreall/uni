@@ -62,7 +62,7 @@ const typeDefs = gql`
   type Mutation {
     addAction(input: ActionInput!): Action!
     updateActionById(id: ID!, input: ActionInput!): ActionsRes!
-    # updateActionBySymbol(symbol: String!, input: ActionInput!): ActionsRes!
+    updateActionBySymbol(symbol: String!, input: ActionInput!): ActionsRes!
   }
 `;
 

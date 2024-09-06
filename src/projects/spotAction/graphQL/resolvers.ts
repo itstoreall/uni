@@ -26,11 +26,8 @@ const resolvers = {
     },
 
     getActionBySymbol: async (_: any, args: t.SymbolArg) => {
-      const actions = await u.getAllActions();
-      console.log('args', args);
-      console.log('33333', actions);
-      const params = { model: ActionModel, id: '6653626081d376d08f4c63e2' };
-      return await service.getByID(params);
+      const params = { model: ActionModel, symbol: args.symbol };
+      return await service.getBySymbol(params);
     },
 
     getUser: (_: any, args: any) => {
